@@ -1,0 +1,18 @@
+{
+  "trailingComma": "all",
+  "importOrder": [
+    "^[./(.css)$]",
+    "^@/types/(.*)$",
+    "<THIRD_PARTY_MODULES>",
+    "^@/database/(.*)$",
+    "^@/libs/(.*)$",
+    "^@/app/(.*)$",
+    "^@/hooks/(.*)$",
+    "^@/components/_context/(.*)$",
+    "^@/components/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "plugins": ["@trivago/prettier-plugin-sort-imports"]
+}
