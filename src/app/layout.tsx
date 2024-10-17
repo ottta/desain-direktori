@@ -1,20 +1,26 @@
+import Providers from "./Providers";
 import "./globals.css";
 
 import type { Metadata } from "next";
-import { Work_Sans } from "next/font/google";
+import localFont from "next/font/local";
 
 import { cn } from "@/libs/utils";
 
 export const metadata: Metadata = {
-  title: "(+62) Foundry Directory",
-  description: "Typefoundry directory in Indonesia",
+  title: "+62 | Desain Directori",
+  description: "Desain Direktori in Indonesia",
 };
 
-const sans = Work_Sans({
-  variable: "--font-sans",
-  weight: "variable",
-  subsets: ["latin", "latin-ext"],
-  style: ["normal", "italic"],
+const sans = localFont({
+  display: "block",
+  variable: "--font-nouva",
+  src: [
+    {
+      path: "./fonts/Nouva-VF.woff2",
+      weight: "100 900",
+      style: "normal",
+    },
+  ],
 });
 
 export default function RootLayout({
@@ -25,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn(sans.variable, "antialiased")}>
       <body>
-        <main className={cn("px-12")}>{children}</main>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
