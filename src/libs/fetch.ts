@@ -82,12 +82,15 @@ export async function getTenants(slug?: string) {
 
 export async function getGithubContributors() {
   const octokit = new Octokit({ auth: githubToken });
-  const data = await octokit.request("GET /repos/ottta/ottta/contributors", {
-    owner: "OWNER",
-    repo: "REPO",
-    headers: {
-      "X-GitHub-Api-Version": "2022-11-28",
+  const data = await octokit.request(
+    "GET /repos/ottta/plus-sixtytwo/contributors",
+    {
+      owner: "OWNER",
+      repo: "REPO",
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
     },
-  });
+  );
   return data.data as GitHubContributor[];
 }
