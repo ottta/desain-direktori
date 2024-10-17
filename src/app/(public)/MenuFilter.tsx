@@ -55,7 +55,7 @@ function Chip({
 
 export default function MenuFilter(props: {
   cities: IDiscipline[];
-  disciplines: (IDiscipline & { length: number })[];
+  disciplines: IDiscipline[];
 }) {
   const { cities, disciplines } = props;
 

@@ -2,7 +2,6 @@ import MenuFilter from "./MenuFilter";
 
 import { IDiscipline } from "@/types/discipline";
 
-import { prisma } from "@/prisma";
 import NextLink from "next/link";
 import { redirect } from "next/navigation";
 
@@ -10,15 +9,6 @@ import { fetcher, getCities, getDisciplines } from "@/libs/fetch";
 import { cn } from "@/libs/utils";
 
 const origin = process.env.NEXT_PUBLIC_HOST;
-
-async function getTenantRelatedToDiscipine(id: string) {
-  const d = await prisma.tenant.count({ where: { disciplineId: id } });
-  return d;
-}
-async function getTenantLength() {
-  const length = await prisma.tenant.count();
-  return length;
-}
 
 export default async function Page({
   searchParams,
@@ -47,21 +37,6 @@ export default async function Page({
   cities.data
     .sort((a, b) => a.slug.localeCompare(b.slug))
     .unshift({ id: "", name: "All", slug: "all" });
-
-  const mergeDiscipline = await Promise.all(
-    disciplines.data.map(async (item) => {
-      let length: number = 0;
-      if (item.slug === "all") {
-        length = await getTenantLength();
-      } else {
-        length = await getTenantRelatedToDiscipine(item.id);
-      }
-      return {
-        ...item,
-        length,
-      };
-    }),
-  );
 
   const endPoint = new URL("/api/tenants", origin);
   const entry = Object.entries(searchParams);
@@ -99,7 +74,7 @@ export default async function Page({
       </div>
 
       <div data-container className={cn("pb-24")}>
-        <MenuFilter cities={cities.data} disciplines={mergeDiscipline} />
+        <MenuFilter cities={cities.data} disciplines={disciplines.data} />
         <ul
           data-grid
           className={cn(
