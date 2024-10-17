@@ -1,3 +1,6 @@
+import { prisma } from "./prisma";
+
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth, { DefaultSession } from "next-auth";
 import "next-auth/jwt";
 import { Provider } from "next-auth/providers";
@@ -48,6 +51,8 @@ export const providerMap = providers
   .filter((item) => item.id !== "credentials");
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  // @ts-expect-error IDKW
+  adapter: PrismaAdapter(prisma),
   providers,
   pages: {
     signIn: "/login",
@@ -71,8 +76,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token?.accessToken) {
         session.accessToken = token.accessToken;
       }
-      // @ts-expect-error IDKW
-      session.user.role = token.role;
+      session.user.role = token.role as string;
       return session;
     },
   },

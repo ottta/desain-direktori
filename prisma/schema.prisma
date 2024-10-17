@@ -9,8 +9,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_DIRECT_URL")
 }
 
 model User {
@@ -82,4 +83,29 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+model Discipline {
+  id     String   @id @default(cuid())
+  name   String
+  slug   String   @unique
+  Tenant Tenant[]
+}
+
+model City {
+  id     String   @id @default(cuid())
+  name   String
+  slug   String   @unique
+  Tenant Tenant[]
+}
+
+model Tenant {
+  id           String     @id @default(cuid())
+  name         String
+  slug         String     @unique
+  year         Int
+  discipline   Discipline @relation(fields: [disciplineId], references: [id])
+  disciplineId String
+  city         City       @relation(fields: [cityId], references: [id])
+  cityId       String
 }
