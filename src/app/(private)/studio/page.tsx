@@ -1,3 +1,4 @@
+import CreateCity from "./CreateCity";
 import CreateDiscipline from "./CreateDiscipline";
 import CreateTenant from "./CreateTenant";
 
@@ -16,7 +17,11 @@ export default async function Page() {
     <div data-container>
       <div>Page Studio</div>
       <CreateTenant cities={cities} disciplines={disciplines} />
+      <hr />
+      <CreateCity />
+      <hr />
       <CreateDiscipline />
+      <hr />
       <pre>{JSON.stringify(session, null, 2)}</pre>
     </div>
   );

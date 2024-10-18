@@ -6,9 +6,20 @@ import localFont from "next/font/local";
 
 import { cn } from "@/libs/utils";
 
+const NEXT_PUBLIC_HOST = process.env.NEXT_PUBLIC_HOST;
+
 export const metadata: Metadata = {
-  title: "+62 | Desain Directori",
+  metadataBase: new URL(NEXT_PUBLIC_HOST!),
+  title: {
+    template: "%s | +62 Desain Direktori",
+    default: "+62 | Desain Direktori",
+  },
   description: "Desain Direktori in Indonesia",
+  keywords: ["design", "archive", "indonesia", "designer", "creative"],
+  openGraph: {
+    siteName: "Desain Direktori",
+    description: "Desain Direktori in Indonesia",
+  },
 };
 
 const sans = localFont({

@@ -1,8 +1,13 @@
+import { Metadata } from "next";
 import NextImage from "next/image";
 import NextLink from "next/link";
 
 import { getGithubContributors } from "@/libs/fetch";
 import { cn } from "@/libs/utils";
+
+export const metadata: Metadata = {
+  title: "About",
+};
 
 export default async function About() {
   const contributors = await getGithubContributors();

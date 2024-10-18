@@ -1,13 +1,9 @@
 "use server";
 
 import { prisma } from "@/prisma";
-import { revalidateTag } from "next/cache";
 import { z } from "zod";
 
-import { fetcher } from "@/libs/fetch";
 import { toSlug } from "@/libs/utils";
-
-const origin = process.env.NEXT_PUBLIC_HOST;
 
 const schema = z.object({
   name: z
@@ -36,17 +32,17 @@ export async function createDiscipline(prev: unknown, formData: FormData) {
 
 const schemaTenant = z.object({
   name: z.string().min(4, "Min. 4 characters").max(20, "Max. 20 characters"),
-  year: z.string().length(4, "Must be valid year"),
   discipline: z.string(),
   city: z.string(),
+  // type: z.string(),
 });
 
 export async function createTenant(prev: unknown, formData: FormData) {
   const validFields = schemaTenant.safeParse({
     name: formData.get("name"),
-    year: formData.get("year"),
     discipline: formData.get("discipline"),
     city: formData.get("city"),
+    // type: formData.get("type"),
   });
   if (!validFields.success) {
     return {
@@ -54,27 +50,51 @@ export async function createTenant(prev: unknown, formData: FormData) {
     };
   }
 
-  const data = await fetcher<{
-    data: unknown;
-    success: boolean;
-    message: string;
-  }>(`${origin}/api/tenants`, {
-    method: "POST",
-    body: JSON.stringify({
-      name: validFields.data.name,
-      slug: toSlug(validFields.data.name),
-      disciplineId: validFields.data.discipline,
-      year: parseInt(validFields.data.year),
-      cityId: validFields.data.city,
-    }),
-  });
+  try {
+    await prisma.tenant.create({
+      data: {
+        name: validFields.data.name,
+        slug: toSlug(validFields.data.name),
+        // type: { connect: { id: validFields.data.type } },
+        discipline: { connect: { id: validFields.data.discipline } },
+        address: { create: { city_id: validFields.data.city } },
+      },
+      include: { discipline: true, address: true },
+    });
 
-  if (!data.success) {
     return {
-      message: data.message,
+      message: "Mantap",
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
+const schemaCity = z.object({
+  name: z.string({ invalid_type_error: "City is required" }),
+});
+
+export async function createCity(prev: unknown, formData: FormData) {
+  const validFields = schemaCity.safeParse({
+    name: formData.get("name"),
+  });
+  if (!validFields.success) {
+    return {
+      errors: validFields.error.flatten().fieldErrors,
     };
   }
 
-  revalidateTag("tenants");
-  console.log(data);
+  try {
+    await prisma.city.create({
+      data: {
+        name: validFields.data.name,
+        slug: toSlug(validFields.data.name),
+      },
+    });
+    return {
+      message: "City has been created!",
+    };
+  } catch (error) {
+    throw error;
+  }
 }

@@ -1,4 +1,5 @@
 import { prisma } from "@/prisma";
+import { TenantRole } from "@prisma/client";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -6,22 +7,28 @@ export async function GET(req: Request) {
 
   const qDiscipline = searchParams.get("discipline");
   const qCity = searchParams.get("city");
+  const qCategory = searchParams.get("category");
 
   const data = await prisma.tenant.findMany({
-    where: {
-      discipline: {
-        slug:
-          qDiscipline && qDiscipline !== "all"
-            ? String(qDiscipline)
-            : undefined,
-      },
-      city: {
-        slug: qCity && qCity !== "all" ? String(qCity) : undefined,
+    orderBy: { created_at: "desc" },
+    include: {
+      discipline: true,
+      address: {
+        include: { city: true },
       },
     },
-    include: { discipline: true, city: true },
-    take: Number(limit),
-    skip: 0,
+    take: Number(limit) || 72, // Page size
+    where: {
+      address: {
+        some: { city: { slug: qCity && qCity !== "all" ? qCity : undefined } },
+      },
+      discipline: {
+        some: {
+          slug: qDiscipline && qDiscipline !== "all" ? qDiscipline : undefined,
+        },
+      },
+      type: (qCategory?.toUpperCase() as keyof typeof TenantRole) ?? undefined,
+    },
   });
 
   return Response.json({ data });
@@ -33,10 +40,10 @@ export async function POST(req: Request) {
     data: {
       name: body.name,
       slug: body.slug,
-      year: body.year,
-      disciplineId: body.disciplineId,
-      cityId: body.cityId,
+      discipline: { connect: { id: body.disciplineId } },
+      address: { create: { city_id: body.cityId } },
     },
+    include: { discipline: true, address: true },
   });
   return Response.json({ success: true, data: tenant });
 }

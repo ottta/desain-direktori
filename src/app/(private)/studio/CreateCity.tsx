@@ -1,6 +1,6 @@
 "use client";
 
-import { createDiscipline } from "./actions";
+import { createCity } from "./actions";
 
 import { useFormState } from "react-dom";
 
@@ -8,13 +8,13 @@ const initState = {
   message: "",
 };
 
-export default function CreateDiscipline() {
-  const [state, formAction] = useFormState(createDiscipline, initState);
+export default function CreateCity() {
+  const [state, formAction] = useFormState(createCity, initState);
   return (
     <form action={formAction}>
       <label>
-        <div>Discipline</div>
-        <input name="name" type="text" placeholder="Type Design" required />
+        <div>City</div>
+        <input name="name" type="text" placeholder="Bandung" required />
       </label>
       <button type="submit">Add</button>
       <div>
