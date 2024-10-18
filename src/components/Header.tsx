@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import NextImage from "next/image";
 import NextLink from "next/link";
 
@@ -57,23 +57,16 @@ export default function Header() {
         >
           {session && session.user ? (
             <>
-              {/* <div>
-                <form
-                  action={async () => {
-                    "use server";
-                    try {
-                      await signOut();
-                    } catch (error) {
-                      throw error;
-                    }
-                  }}
-                >
-                  <button type="submit">Sign Out</button>
-                </form>
-              </div> */}
+              <button onClick={() => signOut()}>Sign Out</button>
               {session.user.image ? (
                 <NextLink
-                  href="/studio"
+                  href={
+                    session.user.role
+                      ? session.user.role !== "USER"
+                        ? "/studio"
+                        : "/submission"
+                      : "/"
+                  }
                   className={cn(
                     "inline-block",
                     "relative",
