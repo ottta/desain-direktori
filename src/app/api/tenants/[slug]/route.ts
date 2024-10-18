@@ -11,9 +11,11 @@ export async function GET(
       id: true,
       name: true,
       slug: true,
-      year: true,
-      city: true,
+      address: true,
       discipline: true,
+      established_at: true,
+      created_at: true,
+      updated_at: true,
     },
   });
   return Response.json({ data: tenant });
