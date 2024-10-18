@@ -6,6 +6,9 @@ import localFont from "next/font/local";
 
 import { cn } from "@/libs/utils";
 
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+
 const NEXT_PUBLIC_HOST = process.env.NEXT_PUBLIC_HOST;
 
 export const metadata: Metadata = {
@@ -42,7 +45,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn(sans.variable, "antialiased")}>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <Header />
+          <main className={cn("pt-16", "lg:pt-14", "min-h-svh")}>
+            {children}
+          </main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

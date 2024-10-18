@@ -1,21 +1,23 @@
 import { prisma } from "./prisma";
 
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import { UserRole } from "@prisma/client";
 import NextAuth, { DefaultSession } from "next-auth";
 import "next-auth/jwt";
 import { Provider } from "next-auth/providers";
 import ProviderGitHub from "next-auth/providers/github";
+import ProviderGoogle from "next-auth/providers/google";
 
 declare module "next-auth" {
   interface Session {
     accessToken?: string;
     user: {
-      role: string;
+      role?: UserRole;
     } & DefaultSession["user"];
   }
 
   interface User {
-    role: string;
+    role?: UserRole;
   }
 }
 
@@ -27,13 +29,26 @@ declare module "next-auth/jwt" {
 
 const providers: Provider[] = [
   ProviderGitHub({
+    allowDangerousEmailAccountLinking: true,
     profile(profile) {
       return {
-        id: profile.id.toString(),
         name: profile.name,
         email: profile.email,
         image: profile.avatar_url,
-        role: (profile.role as string | undefined) ?? "user",
+        role:
+          (profile.role as keyof typeof UserRole | undefined) ?? UserRole.USER,
+      };
+    },
+  }),
+  ProviderGoogle({
+    allowDangerousEmailAccountLinking: true,
+    profile(profile) {
+      return {
+        name: profile.name,
+        email: profile.email,
+        image: profile.picture,
+        role:
+          (profile.role as keyof typeof UserRole | undefined) ?? UserRole.USER,
       };
     },
   }),
@@ -51,7 +66,7 @@ export const providerMap = providers
   .filter((item) => item.id !== "credentials");
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  // @ts-expect-error IDKW
+  debug: process.env.NODE_ENV !== "production",
   adapter: PrismaAdapter(prisma),
   providers,
   pages: {
@@ -61,14 +76,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     authorized({ request, auth }) {
       const { pathname } = request.nextUrl;
-      if (pathname === "/studio") return !!auth;
+
+      if (pathname === "/studio") {
+        if (auth && auth.user && auth.user.role === "USER") {
+          return false;
+        }
+        return !!auth;
+      }
+
+      if (pathname === "/submission") return !!auth;
       return true;
     },
-    jwt({ token, trigger, session, account, user }) {
+    jwt({ token, trigger, session, user }) {
       if (trigger === "update") token.name = session.user.name;
-      if (account?.provider === "keycloak") {
-        return { ...token, accessToken: account.access_token };
-      }
       if (user) token.role = user.role;
       return token;
     },
@@ -76,7 +96,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token?.accessToken) {
         session.accessToken = token.accessToken;
       }
-      session.user.role = token.role as string;
+      session.user.role = token.role as UserRole;
       return session;
     },
   },
