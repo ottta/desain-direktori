@@ -14,13 +14,20 @@ datasource db {
   directUrl = env("DATABASE_DIRECT_URL")
 }
 
+enum UserRole {
+  SUPER
+  ADMIN
+  AUTHOR
+  USER
+}
+
 model User {
   id            String          @id @default(cuid())
   name          String?
   email         String          @unique
   emailVerified DateTime?
   image         String?
-  role          String?         @default("user")
+  role          UserRole        @default(USER)
   accounts      Account[]
   sessions      Session[]
   // Optional for WebAuthn support
