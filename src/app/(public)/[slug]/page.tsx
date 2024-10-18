@@ -1,13 +1,24 @@
+import { Metadata } from "next";
 import NextImage from "next/image";
 import { notFound } from "next/navigation";
 
 import { getTenants } from "@/libs/fetch";
 import { cn } from "@/libs/utils";
 
-export default async function Page(props: { params: { slug: string } }) {
-  const {
-    params: { slug },
-  } = props;
+type PageProps = {
+  params: { slug: string };
+};
+export async function generateMetadata({
+  params: { slug },
+}: PageProps): Promise<Metadata> {
+  const data = await getTenants(slug);
+  if (!data) return {};
+  return {
+    title: data.name,
+  };
+}
+
+export default async function Page({ params: { slug } }: PageProps) {
   const data = await getTenants(slug);
   if (!data) notFound();
   return (
