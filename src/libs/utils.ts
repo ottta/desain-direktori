@@ -8,5 +8,5 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function toSlug(s: string) {
-  return slugify(s, { lower: true, remove: /[*+~.()'"!:@]/g });
+  return slugify(s, { lower: true, remove: /[/*+~.,<>()'"!:@]/g });
 }

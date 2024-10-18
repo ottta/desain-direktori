@@ -7,7 +7,7 @@ import localFont from "next/font/local";
 import { cn } from "@/libs/utils";
 
 export const metadata: Metadata = {
-  title: "+62 | Desain Directori",
+  title: "+62 | Desain Direktori",
   description: "Desain Direktori in Indonesia",
 };
 

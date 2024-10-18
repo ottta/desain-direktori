@@ -2,7 +2,6 @@ import { prisma } from "@/prisma";
 import { notFound } from "next/navigation";
 import { Octokit } from "octokit";
 
-const origin = process.env.NEXT_PUBLIC_HOST;
 const githubToken = process.env.GITHUB_TOKEN;
 
 type GitHubContributor = {
@@ -11,23 +10,6 @@ type GitHubContributor = {
   avatar_url: string;
   html_url: string;
   contributions: number;
-};
-
-type Tenant = {
-  id: string;
-  name: string;
-  slug: string;
-  year: number;
-  city: {
-    id: string;
-    name: string;
-    slug: string;
-  };
-  discipline: {
-    id: string;
-    name: string;
-    slug: string;
-  };
 };
 
 export async function fetcher<JSON = unknown>(
@@ -48,38 +30,26 @@ export async function fetcher<JSON = unknown>(
   }
 }
 
-export async function getCities(slug?: string) {
-  if (slug) {
-  }
-  const test = await prisma.city.findMany();
-  // const data = await fetcher<{
-  //   data: { id: string; name: string; slug: string }[];
-  // }>(`${origin}/api/cities`, {
-  //   next: { tags: ["cities"], revalidate: 5 },
-  // });
-  return test;
+export async function getCities() {
+  const data = await prisma.city.findMany();
+  return data;
 }
 
-export async function getDisciplines(slug?: string) {
-  if (slug) {
-  }
-  const test = await prisma.discipline.findMany();
-  // const data = await fetcher<{
-  //   data: { id: string; name: string; slug: string }[];
-  // }>(`${origin}/api/disciplines`, {
-  //   next: { tags: ["disciplines"], revalidate: 5 },
-  // });
-  return test;
+export async function getDisciplines() {
+  const data = await prisma.discipline.findMany();
+  return data;
 }
 
 export async function getTenants(slug?: string) {
   if (slug) {
-    const data = await fetcher<{
-      data: Tenant;
-    }>(`${origin}/api/tenants/${slug}`, {
-      next: { tags: ["tenant", slug] },
+    const t = await prisma.tenant.findUniqueOrThrow({
+      where: { slug },
+      include: {
+        discipline: true,
+        address: { select: { city: true } },
+      },
     });
-    return data;
+    return t;
   }
 }
 

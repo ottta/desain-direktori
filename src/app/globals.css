@@ -14,7 +14,7 @@ body {
   @apply w-full;
   @apply max-w-screen-2xl;
   @apply mx-auto;
-  @apply px-4 lg:px-16;
+  @apply px-4 lg:px-12;
 }
 
 [data-grid] {

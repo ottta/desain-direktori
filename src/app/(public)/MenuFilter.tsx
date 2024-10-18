@@ -26,13 +26,11 @@ function Chip({
           "flex",
           "items-center",
           "gap-x-1",
-          // "text-xs",
           "lg:text-xs",
           "bg-neutral-200",
           "rounded-full",
           "pr-2",
           "pl-2",
-          // "py-1",
           "h-7",
           "lg:h-6",
           "leading-none",
@@ -90,31 +88,28 @@ export default function MenuFilter(props: {
         "flex",
       )}
     >
-      {/* <div className={cn("col-span-1", "max-lg:hidden")}>Filter</div> */}
-      <div
-        className={cn(
-          "col-span-10",
-          // "flex",
-          // "flex-col",
-          // "gap-x-1",
-          "h-20",
-          "lg:h-14",
-          "overflow-hidden",
-          // "bg-red-200",
-        )}
-      >
+      <div className={cn("col-span-10", "h-20", "lg:h-14", "overflow-hidden")}>
         <ul className={cn("flex", "gap-1", "my-1", "overflow-x-scroll")}>
           {cities.map((item, i) => {
             const isActive = item.slug === searchParams.get("city");
+
             const search = new URLSearchParams(searchParams.toString());
-            search.set("city", item.slug);
+            if (item.slug === "all" && !!searchParams.get("city")) {
+              search.delete("city");
+            } else {
+              search.set("city", item.slug);
+            }
 
             return (
               <Chip
                 key={i}
-                label={item.name}
-                active={isActive}
                 href={`/?${search}`}
+                label={item.name}
+                active={
+                  item.slug === "all" && !searchParams.get("city")
+                    ? true
+                    : isActive
+                }
               />
             );
           })}
@@ -125,14 +120,22 @@ export default function MenuFilter(props: {
             const isActive = item.slug === searchParams.get("discipline");
 
             const search = new URLSearchParams(searchParams.toString());
-            search.set("discipline", item.slug);
+            if (item.slug === "all" && !!searchParams.get("discipline")) {
+              search.delete("discipline");
+            } else {
+              search.set("discipline", item.slug);
+            }
 
             return (
               <Chip
                 key={i}
-                label={item.name}
-                active={isActive}
                 href={`/?${search}`}
+                label={item.name}
+                active={
+                  item.slug === "all" && !searchParams.get("discipline")
+                    ? true
+                    : isActive
+                }
               />
             );
           })}
