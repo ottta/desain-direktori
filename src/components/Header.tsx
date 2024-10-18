@@ -40,7 +40,8 @@ export default function Header() {
               // "bg-neutral-300",
             )}
           >
-            +62 | Desain Direktori
+            +62 | <span className={cn("uppercase", "font-normal")}>Desain</span>{" "}
+            Direktori
           </NextLink>
         </div>
 
@@ -83,9 +84,11 @@ export default function Header() {
                   )}
                 >
                   <NextImage
+                    fill
+                    priority
                     alt={session.user.name ?? "Avatar"}
                     src={session.user.image}
-                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 </NextLink>
               ) : (
