@@ -2,6 +2,7 @@ import MenuFilter from "./MenuFilter";
 
 import { prisma } from "@/prisma";
 import { TenantRole } from "@prisma/client";
+import NextImage from "next/image";
 import NextLink from "next/link";
 import { ReactNode } from "react";
 
@@ -152,6 +153,7 @@ export default async function Page({
             "bg-neutral-100",
             "max-lg:-mx-4",
             "max-lg:px-4",
+            "z-10",
           )}
         >
           {["Year", "Name", "Website", "Discipline", "Category", "City"].map(
@@ -194,24 +196,60 @@ export default async function Page({
                 key={i}
                 data-grid
                 style={{ fontFeatureSettings: `"tnum" 1` }}
-                className={cn("col-span-full", "gap-1", "hover:bg-neutral-200")}
+                className={cn(
+                  "col-span-full",
+                  "gap-1",
+                  "hover:bg-neutral-200",
+                  "items-center",
+                )}
               >
                 <div className={cn("col-span-1", "px-2")}>
                   {established_at.getFullYear()}
                 </div>
-                <NextLink
-                  href={`/${slug}`}
-                  className={cn(
-                    "col-span-2",
-                    "px-2",
-                    "visited:text-red-500",
-                    "overflow-hidden",
-                    "whitespace-nowrap",
-                    "text-ellipsis",
-                  )}
-                >
-                  {name}
-                </NextLink>
+                <div className={cn("col-span-2")}>
+                  <NextLink
+                    href={`/${slug}`}
+                    className={cn(
+                      "px-2",
+                      "visited:text-red-500",
+                      "overflow-hidden",
+                      "whitespace-nowrap",
+                      "text-ellipsis",
+                      "flex",
+                      "items-center",
+                      "gap-1",
+                      "overflow-hidden",
+                      "relative",
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "relative",
+                        "h-12",
+                        "aspect-square",
+                        "overflow-hidden",
+                        "shrink-0",
+                      )}
+                    >
+                      <NextImage
+                        alt={name}
+                        src={item.avatar_url}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className={cn("object-center", "object-cover")}
+                      />
+                    </div>
+                    <div
+                      className={cn(
+                        "overflow-hidden",
+                        "whitespace-nowrap",
+                        "text-ellipsis",
+                      )}
+                    >
+                      {name}
+                    </div>
+                  </NextLink>
+                </div>
                 <div
                   className={cn(
                     "col-span-2",

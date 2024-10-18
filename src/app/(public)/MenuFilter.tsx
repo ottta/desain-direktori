@@ -78,7 +78,6 @@ export default function MenuFilter(props: {
   return (
     <menu
       ref={ref}
-      data-grid
       className={cn(
         "sticky",
         "top-0",
@@ -87,9 +86,10 @@ export default function MenuFilter(props: {
         "bg-neutral-100",
         "flex",
         "max-lg:-mx-4",
+        "z-10",
       )}
     >
-      <div className={cn("col-span-10", "h-20", "lg:h-14", "overflow-hidden")}>
+      <div className={cn("h-20", "lg:h-14", "overflow-hidden")}>
         <ul
           className={cn(
             "scroll-hidden",
