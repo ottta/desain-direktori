@@ -1,14 +1,11 @@
 import MenuFilter from "./MenuFilter";
 
-import { IDiscipline } from "@/types/discipline";
-
+import { prisma } from "@/prisma";
 import NextLink from "next/link";
 import { redirect } from "next/navigation";
 
-import { fetcher, getCities, getDisciplines } from "@/libs/fetch";
+import { getCities, getDisciplines } from "@/libs/fetch";
 import { cn } from "@/libs/utils";
-
-const origin = process.env.NEXT_PUBLIC_HOST;
 
 export default async function Page({
   searchParams,
@@ -21,37 +18,41 @@ export default async function Page({
     city?: string;
   };
 }) {
+  const sParams = new URLSearchParams(searchParams);
+
+  if (sParams.size <= 0) {
+    redirect(`/?discipline=all&city=all&limit=72`);
+  }
+
   const [disciplines, cities] = await Promise.all([
     getDisciplines(),
     getCities(),
   ]);
 
-  if (!searchParams?.page)
-    redirect(`/?page=1&limit=72&order=asc&city=all&discipline=all`);
-
   // Add `All` to the first of list
-  disciplines.data
+  disciplines
     .sort((a, b) => a.slug.localeCompare(b.slug))
     .unshift({ id: "", name: "All", slug: "all" });
 
-  cities.data
+  cities
     .sort((a, b) => a.slug.localeCompare(b.slug))
     .unshift({ id: "", name: "All", slug: "all" });
 
-  const endPoint = new URL("/api/tenants", origin);
-  const entry = Object.entries(searchParams);
-  entry.forEach(([key, value]) => {
-    endPoint.searchParams.append(key, value);
+  const qCity = sParams.get("city");
+  const qDiscipline = sParams.get("discipline");
+  const test = await prisma.tenant.findMany({
+    include: { discipline: true, city: true },
+    take: Number(sParams.get("limit")) || 72,
+    skip: 0,
+    where: {
+      city: {
+        slug: qCity && qCity !== "all" ? qCity : undefined,
+      },
+      discipline: {
+        slug: qDiscipline && qDiscipline !== "all" ? qDiscipline : undefined,
+      },
+    },
   });
-  const data = await fetcher<{
-    data: {
-      name: string;
-      slug: string;
-      discipline: IDiscipline;
-      city: IDiscipline;
-      year: number;
-    }[];
-  }>(endPoint.href, { next: { revalidate: 5, tags: ["tenants"] } });
 
   return (
     <>
@@ -74,7 +75,7 @@ export default async function Page({
       </div>
 
       <div data-container className={cn("pb-24")}>
-        <MenuFilter cities={cities.data} disciplines={disciplines.data} />
+        <MenuFilter cities={cities} disciplines={disciplines} />
         <ul
           data-grid
           className={cn(
@@ -92,8 +93,6 @@ export default async function Page({
               key={i}
               className={cn(
                 "text-sm",
-                // "uppercase",
-                // "font-semibold",
                 "px-2",
                 item === "Name" || item === "Discipline" || item === "Website"
                   ? "col-span-2"
@@ -107,74 +106,59 @@ export default async function Page({
         </ul>
 
         <ul data-grid className={cn("gap-1")}>
-          {data.data
-            .concat(
-              data.data,
-              data.data,
-              data.data,
-              data.data,
-              data.data,
-              data.data,
-            )
-            .map((item, i) => {
-              const { name, slug, discipline, city, year } = item;
-              const activeDiscipline =
-                discipline.slug === searchParams.discipline;
-              const activeCity = city.slug === searchParams.city;
-              return (
-                <li
-                  key={i}
-                  data-grid
-                  style={{ fontFeatureSettings: `"tnum" 1` }}
-                  className={cn(
-                    "col-span-full",
-                    // "grid",
-                    // "grid-cols-12",
-                    "gap-1",
-                  )}
+          {test.map((item, i) => {
+            const { name, slug, discipline, city, year } = item;
+            const activeDiscipline = discipline.slug === qDiscipline;
+            const activeCity = city.slug === qCity;
+            return (
+              <li
+                key={i}
+                data-grid
+                style={{ fontFeatureSettings: `"tnum" 1` }}
+                className={cn("col-span-full", "gap-1")}
+              >
+                <div className={cn("col-span-1", "px-2")}>{year}</div>
+                <NextLink
+                  href={`/${slug}`}
+                  className={cn("col-span-2", "px-2", "visited:text-red-500")}
                 >
-                  <div className={cn("col-span-1", "px-2")}>{year}</div>
-                  <NextLink
-                    href={`/${slug}`}
-                    className={cn("col-span-2", "px-2", "visited:text-red-500")}
-                  >
-                    {name}
-                  </NextLink>
-                  <div className={cn("col-span-2", "max-lg:hidden", "px-2")}>
-                    https://{slug}.com
-                  </div>
-                  <div className={cn("col-span-2", "px-2")}>
-                    <NextLink
-                      href={{
-                        href: "/",
-                        query: { ...searchParams, discipline: discipline.slug },
-                      }}
-                      className={cn(
-                        activeDiscipline && "text-neutral-500",
-                        activeDiscipline && "pointer-events-none",
-                        activeDiscipline && "underline",
-                      )}
-                    >
-                      {discipline.name}
-                    </NextLink>
-                  </div>
+                  {name}
+                </NextLink>
+                <div className={cn("col-span-2", "max-lg:hidden", "px-2")}>
+                  https://{slug}.com
+                </div>
+                <div className={cn("col-span-2", "px-2")}>
                   <NextLink
                     href={{
                       href: "/",
-                      query: { ...searchParams, city: city.slug },
+                      query: { ...searchParams, discipline: discipline.slug },
                     }}
                     className={cn(
-                      activeCity && "text-neutral-500",
-                      activeCity && "pointer-events-none",
-                      activeCity && "underline",
-                      "px-2",
+                      activeDiscipline && "text-neutral-500",
+                      activeDiscipline && "pointer-events-none",
+                      activeDiscipline && "underline",
                     )}
                   >
-                    {city.name}
+                    {discipline.name}
                   </NextLink>
-                </li>
-              );
-            })}
+                </div>
+                <NextLink
+                  href={{
+                    href: "/",
+                    query: { ...searchParams, city: city.slug },
+                  }}
+                  className={cn(
+                    activeCity && "text-neutral-500",
+                    activeCity && "pointer-events-none",
+                    activeCity && "underline",
+                    "px-2",
+                  )}
+                >
+                  {city.name}
+                </NextLink>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </>

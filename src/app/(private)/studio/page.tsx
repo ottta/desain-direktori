@@ -15,7 +15,7 @@ export default async function Page() {
   return (
     <div data-container>
       <div>Page Studio</div>
-      <CreateTenant cities={cities.data} disciplines={disciplines.data} />
+      <CreateTenant cities={cities} disciplines={disciplines} />
       <CreateDiscipline />
       <pre>{JSON.stringify(session, null, 2)}</pre>
     </div>

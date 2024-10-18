@@ -1,3 +1,4 @@
+import { prisma } from "@/prisma";
 import { notFound } from "next/navigation";
 import { Octokit } from "octokit";
 
@@ -50,23 +51,25 @@ export async function fetcher<JSON = unknown>(
 export async function getCities(slug?: string) {
   if (slug) {
   }
-  const data = await fetcher<{
-    data: { id: string; name: string; slug: string }[];
-  }>(`${origin}/api/cities`, {
-    next: { tags: ["cities"], revalidate: 5 },
-  });
-  return data;
+  const test = await prisma.city.findMany();
+  // const data = await fetcher<{
+  //   data: { id: string; name: string; slug: string }[];
+  // }>(`${origin}/api/cities`, {
+  //   next: { tags: ["cities"], revalidate: 5 },
+  // });
+  return test;
 }
 
 export async function getDisciplines(slug?: string) {
   if (slug) {
   }
-  const data = await fetcher<{
-    data: { id: string; name: string; slug: string }[];
-  }>(`${origin}/api/disciplines`, {
-    next: { tags: ["disciplines"], revalidate: 5 },
-  });
-  return data;
+  const test = await prisma.discipline.findMany();
+  // const data = await fetcher<{
+  //   data: { id: string; name: string; slug: string }[];
+  // }>(`${origin}/api/disciplines`, {
+  //   next: { tags: ["disciplines"], revalidate: 5 },
+  // });
+  return test;
 }
 
 export async function getTenants(slug?: string) {
