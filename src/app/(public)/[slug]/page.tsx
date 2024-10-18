@@ -22,8 +22,8 @@ export default async function Page({ params: { slug } }: PageProps) {
   const data = await getTenants(slug);
   if (!data) notFound();
   return (
-    <div data-container>
-      <div data-grid className={cn()}>
+    <div data-container className={cn("min-h-svh")}>
+      <div data-grid>
         <div className={cn("col-span-6")}>
           <ul>
             {data.address.map((item, i) => (
@@ -32,8 +32,8 @@ export default async function Page({ params: { slug } }: PageProps) {
           </ul>
           <div
             className={cn(
-              "text-7xl",
-              // "font-bold",
+              "text-5xl",
+              "lg:text-7xl",
               "leading-[0.9]",
               "uppercase",
             )}
