@@ -22,3 +22,12 @@ body {
   @apply grid-cols-6 lg:grid-cols-12;
   @apply gap-x-1;
 }
+
+.scroll-hidden::-webkit-scrollbar {
+  @apply h-0 w-0;
+  @apply hidden;
+}
+
+.scroll-hidden::-webkit-scrollbar-thumb {
+  @apply hidden;
+}

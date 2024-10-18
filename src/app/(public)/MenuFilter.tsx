@@ -86,10 +86,20 @@ export default function MenuFilter(props: {
         "lg:pt-14",
         "bg-neutral-100",
         "flex",
+        "max-lg:-mx-4",
       )}
     >
       <div className={cn("col-span-10", "h-20", "lg:h-14", "overflow-hidden")}>
-        <ul className={cn("flex", "gap-1", "my-1", "overflow-x-scroll")}>
+        <ul
+          className={cn(
+            "scroll-hidden",
+            "flex",
+            "gap-1",
+            "my-1",
+            "overflow-x-scroll",
+            "max-lg:px-4",
+          )}
+        >
           {cities.map((item, i) => {
             const isActive = item.slug === searchParams.get("city");
 
@@ -115,7 +125,16 @@ export default function MenuFilter(props: {
           })}
         </ul>
 
-        <ul className={cn("flex", "gap-1", "my-1", "overflow-x-scroll")}>
+        <ul
+          className={cn(
+            "scroll-hidden",
+            "flex",
+            "gap-1",
+            "my-1",
+            "overflow-x-scroll",
+            "max-lg:px-4",
+          )}
+        >
           {disciplines.map((item, i) => {
             const isActive = item.slug === searchParams.get("discipline");
 

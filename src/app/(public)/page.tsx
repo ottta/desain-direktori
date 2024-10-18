@@ -97,7 +97,7 @@ export default async function Page({
         <div
           style={{ fontFeatureSettings: `"tnum" 1` }}
           className={cn(
-            "text-6xl",
+            "text-5xl",
             "lg:text-7xl",
             "max-lg:px-1",
             "!leading-[0.8]",
@@ -150,6 +150,8 @@ export default async function Page({
             "lg:h-6",
             "mb-1",
             "bg-neutral-100",
+            "max-lg:-mx-4",
+            "max-lg:px-4",
           )}
         >
           {["Year", "Name", "Website", "Discipline", "Category", "City"].map(
@@ -163,6 +165,7 @@ export default async function Page({
                     ? "col-span-2"
                     : "col-span-1",
                   item === "Website" && "max-lg:hidden",
+                  item === "City" && "max-lg:hidden",
                 )}
               >
                 {item}
@@ -254,7 +257,7 @@ export default async function Page({
                     {item.type}
                   </NextLink>
                 </div>
-                <div>
+                <div className={cn("max-lg:hidden", "overflow-hidden")}>
                   {address.map((item, i) => {
                     const activeCity = item.city.slug === qCity;
                     return (
@@ -265,6 +268,10 @@ export default async function Page({
                           query: { ...searchParams, city: item.city.slug },
                         }}
                         className={cn(
+                          "block",
+                          "overflow-hidden",
+                          "whitespace-nowrap",
+                          "text-ellipsis",
                           activeCity && "text-neutral-500",
                           activeCity && "pointer-events-none",
                           activeCity && "underline",
