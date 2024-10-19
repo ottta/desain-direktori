@@ -10,7 +10,7 @@
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
-    "db:seed": "ts-node prisma/seed.ts",
+    "db:seed": "pnpm db:reset && ts-node prisma/seed.ts",
     "db:reset": "prisma db push --force-reset"
   },
   "dependencies": {

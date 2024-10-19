@@ -52,13 +52,12 @@ async function main() {
   });
 
   await Promise.all(
-    Array.from({ length: 1000 }).map(async (_, i) => {
+    Array.from({ length: 1000 }).map(async () => {
       const type = tenantRole[getRandomInt(0, 2)] as keyof typeof TenantRole;
       const name =
         type === "COMPANY" ? faker.company.name() : faker.person.fullName();
       await prisma.tenant.create({
         data: {
-          cursor: i,
           type,
           name,
           slug: toSlug(name),
@@ -72,9 +71,6 @@ async function main() {
             create: {
               city_id: db_city[getRandomInt(0, db_city.length)].id,
             },
-          },
-          media: {
-            create: { url: faker.internet.url() },
           },
           established_at: new Date(
             faker.date.between({
