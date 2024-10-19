@@ -1,23 +1,30 @@
 import { prisma } from "@/prisma";
 import { TenantRole } from "@prisma/client";
 
+const PER_PAGE = 24;
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const limit = searchParams.get("limit") || "72";
+  const limit = searchParams.get("limit") || PER_PAGE;
+  const cursor = searchParams.get("cursor") || null;
 
-  const qDiscipline = searchParams.get("discipline");
-  const qCity = searchParams.get("city");
-  const qCategory = searchParams.get("category");
+  const qDiscipline = searchParams.get("discipline") || "all";
+  const qCity = searchParams.get("city") || "all";
+  const qCategory = searchParams.get("category") || "all";
 
   const data = await prisma.tenant.findMany({
-    orderBy: { created_at: "desc" },
-    include: {
-      discipline: true,
-      address: {
-        include: { city: true },
+    take: Number(limit), // Page size
+    ...(cursor && {
+      skip: 1,
+      cursor: {
+        cursor: Number(cursor),
       },
+    }),
+    orderBy: { cursor: "desc" },
+    include: {
+      discipline: { select: { name: true, slug: true } },
+      address: { select: { city: { select: { name: true, slug: true } } } },
     },
-    take: Number(limit) || 72, // Page size
     where: {
       address: {
         some: { city: { slug: qCity && qCity !== "all" ? qCity : undefined } },
@@ -27,7 +34,11 @@ export async function GET(req: Request) {
           slug: qDiscipline && qDiscipline !== "all" ? qDiscipline : undefined,
         },
       },
-      type: (qCategory?.toUpperCase() as keyof typeof TenantRole) ?? undefined,
+      ...(Object.values(TenantRole).includes(
+        String(qCategory.toUpperCase()) as keyof typeof TenantRole,
+      )
+        ? { type: qCategory.toUpperCase() as keyof typeof TenantRole }
+        : {}),
     },
   });
 
