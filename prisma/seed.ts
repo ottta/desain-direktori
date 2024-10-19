@@ -52,12 +52,13 @@ async function main() {
   });
 
   await Promise.all(
-    Array.from({ length: 500 }).map(async () => {
+    Array.from({ length: 1000 }).map(async (_, i) => {
       const type = tenantRole[getRandomInt(0, 2)] as keyof typeof TenantRole;
       const name =
         type === "COMPANY" ? faker.company.name() : faker.person.fullName();
       await prisma.tenant.create({
         data: {
+          cursor: i,
           type,
           name,
           slug: toSlug(name),

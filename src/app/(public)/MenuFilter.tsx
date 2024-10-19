@@ -83,6 +83,7 @@ export default function MenuFilter(props: {
         "top-0",
         "pt-16",
         "lg:pt-14",
+        "-mt-14",
         "bg-neutral-100",
         "flex",
         "max-lg:-mx-4",
