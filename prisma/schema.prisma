@@ -33,8 +33,11 @@ model User {
   // Optional for WebAuthn support
   Authenticator Authenticator[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Tenant     Tenant[]
+  Discipline Discipline[]
+  City       City[]
 
   @@map("user")
 }
@@ -99,9 +102,38 @@ model Authenticator {
   @@map("user_authenticator")
 }
 
+model Discipline {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  tenants   Tenant[]
+  author    User     @relation(fields: [author_id], references: [id])
+  author_id String
+
+  @@map("discipline")
+}
+
+model City {
+  id            String          @id @default(cuid())
+  name          String          @unique
+  slug          String          @unique
+  TenantAddress TenantAddress[]
+  author        User            @relation(fields: [author_id], references: [id])
+  author_id     String
+
+  @@map("city")
+}
+
 enum TenantRole {
   PERSONAL
   COMPANY
+}
+
+enum TenantStatus {
+  SUSPEND
+  PUBLISH
+  PENDING
+  DECLINE
 }
 
 model Tenant {
@@ -117,43 +149,29 @@ model Tenant {
   established_at DateTime        @default(now())
   created_at     DateTime        @default(now())
   updated_at     DateTime        @updatedAt
+  author         User            @relation(fields: [author_id], references: [id])
+  author_id      String
+  status         TenantStatus    @default(PENDING)
 
   @@map("tenant")
 }
 
-model Discipline {
-  id      String   @id @default(cuid())
-  name    String   @unique
-  slug    String   @unique
-  tenants Tenant[]
-
-  @@map("discipline")
-}
-
-model City {
-  id            String          @id @default(cuid())
-  name          String          @unique
-  slug          String          @unique
-  TenantAddress TenantAddress[]
-
-  @@map("city")
-}
-
 model TenantAddress {
-  id        String  @id @default(cuid())
-  city      City    @relation(fields: [city_id], references: [id])
-  city_id   String
-  tenant    Tenant? @relation(fields: [tenant_id], references: [id])
-  tenant_id String?
+  city     City   @relation(fields: [city_id], references: [id], onDelete: Cascade)
+  city_id  String
+  owner    Tenant @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  owner_id String
 
+  @@unique([city_id, owner_id])
   @@map("tenant_address")
 }
 
 model TenantMedia {
-  title  String
-  url    String @default("")
-  tenant Tenant @relation(fields: [title], references: [slug], onDelete: Cascade)
+  title    String @default("")
+  url      String @default("")
+  owner    Tenant @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  owner_id String
 
-  @@id([title, url])
+  @@unique([title, url, owner_id])
   @@map("tenant_media")
 }
