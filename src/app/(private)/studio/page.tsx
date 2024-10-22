@@ -1,28 +1,19 @@
-import CreateCity from "./CreateCity";
-import CreateDiscipline from "./CreateDiscipline";
-import CreateTenant from "./CreateTenant";
+import ControlTenant2, { ControlTenantAttr } from "./_ControlTenant";
 
 import { auth } from "@/auth";
 
-import { getCities, getDisciplines } from "@/libs/fetch";
+import { fetcher } from "@/libs/fetch";
+
+const NEXT_PUBLIC_HOST = process.env.NEXT_PUBLIC_HOST;
 
 export default async function Page() {
-  const [cities, disciplines, session] = await Promise.all([
-    getCities(),
-    getDisciplines(),
+  const [session, tenants] = await Promise.all([
     auth(),
+    await fetcher<{ data: ControlTenantAttr[] }>(
+      `${NEXT_PUBLIC_HOST}/api/tenants`,
+    ),
   ]);
 
-  return (
-    <div data-container>
-      <div>Page Studio</div>
-      <CreateTenant cities={cities} disciplines={disciplines} />
-      <hr />
-      <CreateCity />
-      <hr />
-      <CreateDiscipline />
-      <hr />
-      <pre>{JSON.stringify(session, null, 2)}</pre>
-    </div>
-  );
+  if (!session) return;
+  return <ControlTenant2 fallback={tenants} />;
 }
