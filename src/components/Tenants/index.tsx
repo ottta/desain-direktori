@@ -6,7 +6,7 @@ import useSWRInfinite from "swr/infinite";
 import { Tenant } from "@/types/tenants";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
 
 import { fetcher } from "@/libs/fetch";
@@ -60,8 +60,8 @@ export default function Tenants({ init }: { init: ResponseTenant }) {
       keepPreviousData: true,
     });
 
-  // const tempData: ResponseTenant[] = [];
-  // const tenants = data ? tempData.concat(...data) : [];
+  const tempData: ResponseTenant[] = [];
+  const tenants = data ? tempData.concat(...data) : [];
   const isLoadingMore =
     isLoading || (size > 0 && data && typeof data[size - 1] === "undefined");
   const isEmpty = data?.[0]?.data.length === 0;
@@ -83,73 +83,35 @@ export default function Tenants({ init }: { init: ResponseTenant }) {
     isLoadingMore,
   ]);
 
+  const freezeSearchParams = useRef(searchParams.toString());
+  const refParent = useRef<HTMLUListElement>(null);
+  useEffect(() => {
+    if (!refParent.current) return;
+    if (searchParams.toString() === freezeSearchParams.current) return;
+    refParent.current.scrollIntoView({ behavior: "smooth" });
+    freezeSearchParams.current = searchParams.toString();
+  }, [refParent, searchParams, freezeSearchParams]);
+
   if (error) return null;
   if (!data) return <Skeleton length={PAGE_SIZE} />;
+  if (tenants.length <= 0) return <div>No Data</div>;
 
   return (
     <>
       <ul
-        data-grid
+        ref={refParent}
         className={cn(
-          "sticky",
-          "top-36",
-          "lg:top-28",
-          "h-8",
-          "lg:h-6",
-          "mb-1",
-          "bg-neutral-100",
-          "max-lg:-mx-4",
-          "max-lg:px-4",
-          "z-10",
+          isLoading && "opacity-30",
+          "gap-1",
+          // "space-y-1",
+          "scroll-mt-28",
+          "divide-y",
         )}
       >
-        {["Year", "Name", "Website", "Discipline", "Category", "City"].map(
-          (item, i) => (
-            <li
-              key={i}
-              className={cn(
-                "text-sm",
-                "px-2",
-                item === "Name" || item === "Discipline" || item === "Website"
-                  ? "col-span-2"
-                  : "col-span-1",
-                item === "Website" && "max-lg:hidden",
-                item === "City" && "max-lg:hidden",
-              )}
-            >
-              {item}
-            </li>
-          ),
-        )}
-      </ul>
-
-      <ul data-grid className={cn("gap-1", isLoading && "opacity-30")}>
-        {data?.map((item) =>
+        {data.map((item) =>
           item.data.map((item, i) => {
-            const {
-              name,
-              slug,
-              discipline,
-              address,
-              established_at,
-              avatar_url,
-              type,
-              cursor,
-            } = item;
-
-            return (
-              <TenantItem
-                key={i}
-                index={cursor}
-                name={name}
-                slug={slug}
-                address={address}
-                discipline={discipline}
-                established_at={established_at}
-                avatar_url={avatar_url}
-                type={type}
-              />
-            );
+            const { cursor } = item;
+            return <TenantItem key={i} index={cursor} {...item} />;
           }),
         )}
       </ul>
@@ -159,7 +121,16 @@ export default function Tenants({ init }: { init: ResponseTenant }) {
           ref={ref}
           disabled={isLoadingMore || isReachingEnd}
           onClick={() => setSize(size + 1)}
-          className={cn("w-full", "h-14", "bg-neutral-200")}
+          className={cn(
+            "w-full",
+            "h-14",
+            "bg-neutral-100",
+            "dark:bg-neutral-900",
+            "capitalize",
+            "border-y",
+            "disabled:opacity-30",
+            "disabled:cursor-not-allowed",
+          )}
         >
           {isLoadingMore
             ? "loading..."

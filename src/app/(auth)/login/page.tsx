@@ -1,58 +1,87 @@
 import { providerMap, signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
-import { ReactNode } from "react";
+import { ReactNode, use } from "react";
 
 import { cn } from "@/libs/utils";
 
-export default function Page({
-  searchParams: { callbackUrl },
-}: {
-  searchParams: { callbackUrl: string | undefined };
-}) {
+import { Button } from "@/components/ui/button";
+
+type SearchParams = Promise<{ callbackUrl: string | undefined }>;
+export default function Page({ searchParams }: { searchParams: SearchParams }) {
+  const { callbackUrl } = use(searchParams);
   return (
-    <div
-      className={cn(
-        "col-span-6",
-        "lg:col-span-3",
-        "lg:col-start-3",
-        "border",
-        "rounded-xl",
-        "p-2",
-      )}
-    >
-      <ul className={cn("flex", "flex-col", "gap-2")}>
-        {Object.values(providerMap).map((item, i) => (
-          <li key={i}>
-            <form
-              action={async () => {
-                "use server";
-                try {
-                  await signIn(item.id, { redirectTo: callbackUrl ?? "" });
-                } catch (error) {
-                  if (error instanceof AuthError) {
-                    return redirect(`/?error=${error.type}`);
+    <>
+      <div className={cn("col-span-6", "max-lg:hidden")}></div>
+      <div
+        className={cn(
+          "col-span-6",
+          "lg:col-span-3",
+          "border",
+          "rounded-lg",
+          "p-2",
+          "flex",
+          "flex-col",
+          "gap-4",
+          "items-center",
+          "bg-neutral-200",
+          "dark:bg-neutral-800",
+        )}
+      >
+        <ul className={cn("flex", "flex-col", "gap-2", "w-full")}>
+          {Object.values(providerMap).map((item, i) => (
+            <li key={i}>
+              <form
+                action={async () => {
+                  "use server";
+                  try {
+                    await signIn(item.id, { redirectTo: callbackUrl ?? "" });
+                  } catch (error) {
+                    if (error instanceof AuthError)
+                      return redirect(`/?error=${error.type}`);
+                    throw error;
                   }
-                  throw error;
-                }
-              }}
-            >
-              <button
-                type="submit"
-                className={cn("text-2xl", "flex", "items-center", "gap-2")}
+                }}
               >
-                <span className={cn("h-8", "aspect-square", "inline-block")}>
-                  {icon[item.id]}
-                </span>
-                <span>
-                  Sign in with <b>{item.name}</b>
-                </span>
-              </button>
-            </form>
-          </li>
-        ))}
-      </ul>
-    </div>
+                <Button
+                  variant="outline"
+                  type="submit"
+                  className={cn(
+                    "text-2xl",
+                    "flex",
+                    "items-center",
+                    "gap-1",
+                    "px-2",
+                    "py-6",
+                    "w-full",
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "h-8",
+                      "aspect-square",
+                      "inline-flex",
+                      "items-center",
+                      "justify-center",
+                    )}
+                  >
+                    {icon[item.id]}
+                  </span>
+                  <span>
+                    Sign in with <b>{item.name}</b>
+                  </span>
+                </Button>
+              </form>
+            </li>
+          ))}
+        </ul>
+
+        <p>
+          By clicking continue, you agree to our Terms of Service and Privacy
+          Policy.
+        </p>
+      </div>
+    </>
   );
 }
 

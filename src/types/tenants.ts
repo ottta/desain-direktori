@@ -1,5 +1,10 @@
 import { TenantRole } from "@prisma/client";
 
+type TenantMedia = {
+  title: string;
+  url: string;
+};
+
 export type Tenant = {
   id: string;
   name: string;
@@ -12,4 +17,5 @@ export type Tenant = {
   discipline: { id: string; name: string; slug: string }[];
   type: TenantRole;
   cursor: number;
+  media: TenantMedia[];
 };

@@ -45,8 +45,12 @@ export async function getTenants(slug?: string) {
     const t = await prisma.tenant.findUniqueOrThrow({
       where: { slug },
       include: {
-        discipline: true,
-        address: { select: { city: true } },
+        address: { select: { city: { select: { name: true, slug: true } } } },
+        discipline: { select: { name: true, slug: true } },
+        media: { select: { title: true, url: true } },
+        author: {
+          select: { name: true, email: true, image: true, createdAt: true },
+        },
       },
     });
     return t;
