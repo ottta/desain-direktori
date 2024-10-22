@@ -1,10 +1,10 @@
 import { prisma } from "@/prisma";
 
 export async function GET(
-  req: Request,
-  { params }: { params: { slug: string } },
+  _req: Request,
+  { params }: { params: Promise<{ slug: string }> },
 ) {
-  const { slug } = params;
+  const { slug } = await params;
   const tenant = await prisma.tenant.findUnique({
     where: { slug },
     select: {
