@@ -3,11 +3,12 @@
 @tailwind utilities;
 
 * {
-  @apply border-neutral-900;
+  @apply border-neutral-400 dark:border-neutral-950;
 }
 
 body {
   @apply bg-neutral-100 text-neutral-900;
+  @apply dark:bg-neutral-900 dark:text-neutral-300;
 }
 
 [data-container] {
@@ -20,7 +21,7 @@ body {
 [data-grid] {
   @apply grid;
   @apply grid-cols-6 lg:grid-cols-12;
-  @apply gap-x-1;
+  @apply gap-x-3;
 }
 
 .scroll-hidden::-webkit-scrollbar {
