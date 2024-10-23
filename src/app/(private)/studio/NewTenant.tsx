@@ -220,13 +220,17 @@ export default function NewTenant({
           <Combobox
             name="city"
             form={form}
-            items={cities.map((item) => item.name)}
+            items={cities
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((item) => item.name)}
             description="City of domicile"
           />
           <Combobox
             name="discipline"
             form={form}
-            items={disciplines.map((item) => item.name)}
+            items={disciplines
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((item) => item.name)}
             description="Your discipline"
           />
         </div>
