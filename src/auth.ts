@@ -78,9 +78,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       const { pathname } = request.nextUrl;
 
       if (pathname === "/studio") {
-        if (auth && auth.user && auth.user.role === "USER") {
-          return false;
-        }
+        if (auth && auth.user && auth.user.role === "USER") return false;
         return !!auth;
       }
 
