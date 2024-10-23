@@ -3,10 +3,10 @@ import "./globals.css";
 
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { ReactNode } from "react";
 
 import { cn } from "@/libs/utils";
 
-// import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
 const NEXT_PUBLIC_HOST = process.env.NEXT_PUBLIC_HOST;
@@ -37,13 +37,17 @@ const sans = localFont({
   ],
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn(sans.variable, "antialiased")}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={cn(sans.variable, "antialiased")}
+    >
       <body>
         <Providers>
           <Header />
@@ -52,7 +56,6 @@ export default function RootLayout({
           >
             {children}
           </main>
-          {/* <Footer /> */}
         </Providers>
       </body>
     </html>

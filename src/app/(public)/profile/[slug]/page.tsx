@@ -25,54 +25,49 @@ export default async function Page({ params }: PageProps) {
   if (!data) notFound();
   return (
     <>
-      <div className={cn("col-span-6", "py-2")}>
-        {/* <ul>
-          {data.address.map((item, i) => (
-            <li key={i}>{item.city.name}</li>
-          ))}
-        </ul> */}
-        <div
-          className={cn(
-            "text-5xl",
-            "lg:text-5xl",
-            // "!leading-[0.9]",
-            "font-bold",
-            "px-3",
-          )}
-        >
-          {data.name}
-        </div>
-        <div>{data.type}</div>
-        <ul>
-          {data.discipline.map((item, i) => (
-            <li key={i}>{item.name}</li>
-          ))}
-        </ul>
-      </div>
-
       <div
+        data-container
         className={cn(
-          "relative",
-          "aspect-square",
+          "h-[25svh]",
+          "lg:h-[calc(100svh-7rem)]",
+          // "@xs:bg-neutral-100",
+          "@lg:px-0",
           "overflow-hidden",
-          "col-span-2",
         )}
       >
-        <NextImage
-          fill
-          priority
-          alt={data.name}
-          src={data.avatar_url}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
+        <div data-grid className={cn("@xs:grid-cols-6")}>
+          <div className={cn("col-span-6")}>
+            <div
+              className={cn(
+                "relative",
+                "aspect-square",
+                "overflow-hidden",
+                "w-24",
+              )}
+            >
+              <NextImage
+                fill
+                priority
+                alt={data.name}
+                src={data.avatar_url}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              />
+            </div>
+          </div>
+          <div className={cn("col-span-6", "py-2")}>
+            <div className={cn("text-3xl", "lg:text-5xl", "font-bold", "px-3")}>
+              {data.name}
+            </div>
+            <div>{data.type}</div>
+            <ul>
+              {data.discipline.map((item, i) => (
+                <li key={i}>{item.name}</li>
+              ))}
+            </ul>
+            <a href={`/profile/${slug}`}>Detail</a>
+          </div>
+        </div>
       </div>
-
-      {/* <div>
-        <div>Since</div>
-        <div>{data.established_at.getFullYear()}</div>
-      </div> */}
-
-      {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
     </>
   );
 }
