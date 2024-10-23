@@ -2,33 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  @apply border-neutral-400 dark:border-neutral-950;
-}
+@layer base {
+  * {
+    @apply border-neutral-400 dark:border-neutral-900;
+  }
 
-body {
-  @apply bg-neutral-100 text-neutral-900;
-  @apply dark:bg-neutral-900 dark:text-neutral-300;
-}
+  body {
+    @apply bg-neutral-100 text-neutral-900;
+    @apply dark:bg-neutral-950 dark:text-neutral-200;
+  }
 
-[data-container] {
-  @apply w-full;
-  @apply max-w-screen-2xl;
-  @apply mx-auto;
-  @apply px-4 lg:px-12;
-}
+  [data-container] {
+    @apply w-full;
+    @apply max-w-screen-2xl;
+    @apply mx-auto;
+    @apply px-4 lg:px-12;
+  }
 
-[data-grid] {
-  @apply grid;
-  @apply grid-cols-6 lg:grid-cols-12;
-  @apply gap-x-3;
-}
+  [data-grid] {
+    @apply grid;
+    @apply grid-cols-6 lg:grid-cols-12;
+    @apply gap-x-3;
+  }
 
-.scroll-hidden::-webkit-scrollbar {
-  @apply h-0 w-0;
-  @apply hidden;
-}
+  .scroll-hidden::-webkit-scrollbar {
+    @apply h-0 w-0;
+    @apply hidden;
+  }
 
-.scroll-hidden::-webkit-scrollbar-thumb {
-  @apply hidden;
+  .scroll-hidden::-webkit-scrollbar-thumb {
+    @apply hidden;
+  }
 }

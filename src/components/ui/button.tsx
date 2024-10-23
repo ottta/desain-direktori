@@ -17,13 +17,13 @@ const buttonVariants = cva(
         outline:
           "border bg-neutral-200 shadow-sm hover:bg-neutral-300 dark:bg-neutral-900 dark:hover:bg-neutral-950 rounded",
         secondary:
-          "bg-neutral-200 border shadow-sm hover:bg-neutral-200/80 dark:bg-neutral-900 dark:hover:bg-neutral-950/80",
+          "bg-neutral-100 border shadow-sm hover:bg-neutral-200/80 dark:bg-neutral-900 dark:hover:bg-neutral-950/80",
         ghost:
           "hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-50",
         link: "text-neutral-900 underline-offset-4 hover:underline dark:text-neutral-50",
       },
       size: {
-        default: "h-9 px-3 py-2",
+        default: "h-8 px-3 py-2",
         sm: "h-8 rounded-sm px-2 text-xs",
         lg: "h-10 rounded-sm px-2",
         icon: "h-9 w-9",

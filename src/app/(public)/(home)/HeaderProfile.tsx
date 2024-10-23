@@ -1,5 +1,6 @@
 "use client";
 
+import { Cross1Icon } from "@radix-ui/react-icons";
 import NextLink from "next/link";
 import { useParams } from "next/navigation";
 
@@ -16,7 +17,8 @@ export default function HeaderProfile() {
         "items-center",
         "border-b",
         "bg-neutral-100",
-        "dark:bg-neutral-900",
+        "dark:bg-neutral-950",
+        "max-lg:hidden",
       )}
     >
       {params && !!params.slug ? (
@@ -24,15 +26,20 @@ export default function HeaderProfile() {
           href="/"
           scroll={false}
           className={cn(
-            "hover:underline",
-            "px-3",
+            "pr-3",
+            "pl-2",
             "border",
             "rounded-full",
-            "bg-red-400",
+            "bg-red-100",
+            "hover:bg-red-100/80",
             "dark:bg-red-600",
+            "dark:hover:bg-red-600/80",
+            "flex",
+            "items-center",
+            "gap-1",
           )}
         >
-          Close
+          <Cross1Icon /> Close
         </NextLink>
       ) : (
         <div className={cn("px-3")}>Directus Emeritus</div>

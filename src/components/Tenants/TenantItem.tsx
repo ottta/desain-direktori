@@ -1,6 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import highlighter from "search-text-highlight";
 
 import { Tenant } from "@/types/tenants";
 
@@ -17,33 +18,76 @@ type BaseData = {
 
 type TenantItemProps = BaseData & Tenant & { index: number };
 
+const TenantLink = ({
+  name,
+  slug,
+  isActive,
+}: {
+  name: string;
+  slug: string;
+  isActive: boolean;
+}) => {
+  const searchParams = useSearchParams();
+  const sParams = new URLSearchParams(searchParams);
+
+  const href = `/profile/${slug}${sParams.size > 0 ? `?${sParams.toString()}` : ""}`;
+
+  const query = sParams.has("search")
+    ? sParams.get("search")?.toString() || ""
+    : "";
+
+  return (
+    <NextLink
+      href={href}
+      className={cn(
+        "peer",
+        "px-2",
+        "visited:text-neutral-500",
+        "visited:line-through",
+        "overflow-hidden",
+        "whitespace-nowrap",
+        "text-ellipsis",
+        "flex",
+        "items-center",
+        "gap-1",
+        "overflow-hidden",
+        "relative",
+        "group-hover:underline",
+        isActive && "underline",
+      )}
+    >
+      <div
+        dangerouslySetInnerHTML={{
+          __html: highlighter.highlight(name, query, {
+            hlClass: cn("text-red-600", "underline"),
+          }),
+        }}
+        className={cn(
+          "overflow-hidden",
+          "whitespace-nowrap",
+          "text-ellipsis",
+          "text-2xl",
+          "font-bold",
+        )}
+      />
+    </NextLink>
+  );
+};
+
 const TenantItem = (props: TenantItemProps) => {
-  const { name, slug, discipline, established_at, type, avatar_url } = props;
+  const { name, slug, discipline, established_at, avatar_url } = props;
 
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const newSearchParams = new URLSearchParams(searchParams);
-  const qCategory = newSearchParams.get("category");
-  const hasCategory =
-    searchParams && qCategory && qCategory.toUpperCase() === type;
-  const activeCategory = !!hasCategory;
-  if (activeCategory) {
-    newSearchParams.delete("category");
-  } else {
-    newSearchParams.set("category", type.toLowerCase());
-  }
-
-  const href = `/profile/${slug}${newSearchParams.size > 1 ? `?${searchParams}` : ""}`;
-  const isActive = href.split("?")[0] === pathname;
+  const isActive = pathname === `/profile/${slug}`;
 
   const ref = useRef<HTMLLIElement>(null);
   useEffect(() => {
-    if (!ref.current) return;
-    if (!isActive) return;
-    const timeout = setTimeout(
-      () => ref.current?.scrollIntoView({ behavior: "smooth" }),
-      0,
-    );
+    const timeout = setTimeout(() => {
+      if (!isActive) return;
+      if (!ref.current) return;
+      ref.current.scrollIntoView({ behavior: "smooth" });
+    }, 50);
+
     return () => clearTimeout(timeout);
   }, [isActive, ref]);
 
@@ -57,7 +101,8 @@ const TenantItem = (props: TenantItemProps) => {
         !isActive && "hover:dark:bg-neutral-950/20",
         isActive && "bg-neutral-300",
         isActive && "dark:bg-neutral-950/50",
-        "scroll-mt-[calc(7rem-2px)]",
+        "scroll-mt-[calc(25svh+8rem-1px)]",
+        "lg:scroll-mt-[calc(7rem-2px)]",
         "py-3",
         "group",
         "px-3",
@@ -66,15 +111,16 @@ const TenantItem = (props: TenantItemProps) => {
         "justify-between",
       )}
     >
-      <div className={cn("col-span-4", "relative", "flex", "gap-2")}>
-        <Avatar
-          className={cn(
-            "h-14",
-            "w-14",
-            "rounded-none",
-            "peer-visited:bg-red-500",
-          )}
-        >
+      <div
+        className={cn(
+          "col-span-4",
+          "relative",
+          "flex",
+          "gap-2",
+          "overflow-hidden",
+        )}
+      >
+        <Avatar className={cn("h-14", "w-14", "rounded-none")}>
           <AvatarImage alt="Avatar" src={avatar_url} />
           <AvatarFallback>
             {name
@@ -85,42 +131,11 @@ const TenantItem = (props: TenantItemProps) => {
           </AvatarFallback>
         </Avatar>
 
-        <div>
-          <NextLink
-            href={href}
-            scroll={true}
-            className={cn(
-              "peer",
-              "px-2",
-              "visited:text-neutral-500",
-              "visited:line-through",
-              "overflow-hidden",
-              "whitespace-nowrap",
-              "text-ellipsis",
-              "flex",
-              "items-center",
-              "gap-1",
-              "overflow-hidden",
-              "relative",
-              "group-hover:underline",
-              isActive && "underline",
-            )}
-          >
-            <div
-              className={cn(
-                "overflow-hidden",
-                "whitespace-nowrap",
-                "text-ellipsis",
-                "text-2xl",
-                "font-bold",
-              )}
-            >
-              {name}
-            </div>
-          </NextLink>
+        <div className={cn("overflow-hidden")}>
+          <TenantLink name={name} slug={slug} isActive={isActive} />
+
           <div
             className={cn(
-              "max-lg:hidden",
               "px-2",
               "overflow-hidden",
               "whitespace-nowrap",

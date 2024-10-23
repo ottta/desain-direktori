@@ -35,6 +35,8 @@ function Skeleton({ length }: { length: number }) {
 export default function Tenants({ init }: { init: ResponseTenant }) {
   const searchParams = useSearchParams();
   const getKey = (index: number, prevData: ResponseTenant) => {
+    if (prevData && !prevData.data) return null;
+
     const city = searchParams.get("city") || "all";
     const discipline = searchParams.get("discipline") || "all";
     const category = searchParams.get("category") || "all";
@@ -42,9 +44,14 @@ export default function Tenants({ init }: { init: ResponseTenant }) {
     endpoint.searchParams.append("city", city);
     endpoint.searchParams.append("discipline", discipline);
     endpoint.searchParams.append("category", category);
-    // endpoint.searchParams.append("limit", PAGE_SIZE.toString());
 
-    if (prevData && !prevData.data) return null;
+    if (searchParams.has("search")) {
+      const newKey = searchParams.get("search");
+      if (newKey && newKey.length >= 3) {
+        endpoint.searchParams.append("search", newKey);
+      }
+    }
+
     if (index === 0) return endpoint.href;
 
     endpoint.searchParams.append(
@@ -104,7 +111,8 @@ export default function Tenants({ init }: { init: ResponseTenant }) {
           isLoading && "opacity-30",
           "gap-1",
           // "space-y-1",
-          "scroll-mt-28",
+          "scroll-mt-[calc(25svh+4rem)]",
+          "lg:scroll-mt-28",
           "divide-y",
         )}
       >
@@ -135,7 +143,7 @@ export default function Tenants({ init }: { init: ResponseTenant }) {
           {isLoadingMore
             ? "loading..."
             : isReachingEnd
-              ? "no more tenants"
+              ? "no more result"
               : "load more"}
         </button>
       </div>

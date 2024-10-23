@@ -1,86 +1,80 @@
 import { prisma } from "@/prisma";
-import { TenantRole } from "@prisma/client";
-import NextLink from "next/link";
-import { ReactNode } from "react";
+import { TenantRole, TenantStatus } from "@prisma/client";
 
-import { getCities, getDisciplines } from "@/libs/fetch";
 import { cn } from "@/libs/utils";
 
-function PaddingTemplate({
-  pad,
-  children,
+function digitLength(num: number) {
+  const length = (Math.log(num) * Math.LOG10E + 1) | 0;
+  return length;
+}
+
+function Value({
+  value,
+  padLong,
+  label,
 }: {
-  pad?: string;
-  children: ReactNode;
+  value: number;
+  padLong: number;
+  label: string;
 }) {
   return (
     <span>
-      {pad && (
-        <span className={cn("text-neutral-300", "dark:text-neutral-600")}>
-          {pad}
+      <span className={cn("text-neutral-400", "dark:text-neutral-600")}>
+        {Array.from({ length: padLong - digitLength(value) })
+          .map(() => "0")
+          .join("")}
+      </span>
+      <span>
+        {value}{" "}
+        <span className={cn("text-neutral-400", "dark:text-neutral-600")}>
+          {label}
         </span>
-      )}
-      {children}
+      </span>
     </span>
-  );
-}
-
-function digitPadding(num: number) {
-  const sNumber = num.toString();
-  return sNumber.length <= 1 ? (
-    <PaddingTemplate pad="000">{sNumber}</PaddingTemplate>
-  ) : sNumber.length < 3 ? (
-    <PaddingTemplate pad="00">{sNumber}</PaddingTemplate>
-  ) : sNumber.length < 4 ? (
-    <PaddingTemplate pad="0">{sNumber}</PaddingTemplate>
-  ) : (
-    <PaddingTemplate>{sNumber}</PaddingTemplate>
   );
 }
 
 export default async function Page() {
   const [disciplines, cities, companies, persons] = await Promise.all([
-    getDisciplines(),
-    getCities(),
-    await prisma.tenant.count({
-      where: { type: TenantRole.COMPANY, status: "PUBLISH" },
+    prisma.discipline.count(),
+    prisma.city.count(),
+    prisma.tenant.count({
+      where: { type: TenantRole.COMPANY, status: TenantStatus.PUBLISH },
     }),
-    await prisma.tenant.count({
-      where: { type: TenantRole.PERSONAL, status: "PUBLISH" },
+    prisma.tenant.count({
+      where: { type: TenantRole.PERSONAL, status: TenantStatus.PUBLISH },
     }),
   ]);
+
+  // Find the highest value
+  const padLong = digitLength(
+    Math.max(disciplines, cities, companies, persons),
+  );
   return (
-    <div data-container className={cn("min-h-[25vh]", "z-30", "relative")}>
+    <div
+      data-container
+      className={cn("min-h-[33.33vh]", "z-30", "relative", "mb-16", "lg:mb-14")}
+    >
       <div
         style={{ fontFeatureSettings: `"tnum" 1` }}
         className={cn(
-          "text-5xl",
-          "lg:text-7xl",
-          "max-lg:px-1",
+          "portrait:text-4xl",
+          "landscape:text-6xl",
+          "landscape:lg:text-7xl",
+          "px-3",
+          "lg:px-2",
           "!leading-[0.8]",
           "uppercase",
         )}
       >
-        {digitPadding(cities.length - 1)} Cities
+        <Value label="Cities" value={cities} padLong={padLong} />
         <br />
-        {digitPadding(disciplines.length - 1)} Disciplines
+        <Value label="Disciplines" value={disciplines} padLong={padLong} />
         <br />
-        {digitPadding(companies)} Companies
+        <Value label="Companies" value={companies} padLong={padLong} />
         <br />
-        {digitPadding(persons)} Persons
+        <Value label="Persons" value={persons} padLong={padLong} />
       </div>
-      <p className={cn("px-2", "my-6")}>
-        Desain Direktori is inisiative project by{" "}
-        <a
-          href="https://unforma.club"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Taufik Oktama.
-        </a>
-        <br />
-        <NextLink href="/about">Read More...</NextLink>
-      </p>
     </div>
   );
 }

@@ -10,11 +10,13 @@ import {
   DrawerTrigger,
 } from "./ui/drawer";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Switch } from "./ui/switch";
 
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
+import { HamburgerMenuIcon, LaptopIcon } from "@radix-ui/react-icons";
 import { Session } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
+import { useTheme } from "next-themes";
 import NextLink from "next/link";
 
 import { cn } from "@/libs/utils";
@@ -29,9 +31,9 @@ export default function Header() {
         "top-0",
         "right-0",
         "left-0",
-        "z-40",
+        "z-50",
         "bg-neutral-100",
-        "dark:bg-neutral-900",
+        "dark:bg-neutral-950",
         // "transition",
         // "duration-500",
       )}
@@ -56,7 +58,7 @@ export default function Header() {
               "overflow-hidden",
               "text-ellipsis",
               // "bg-neutral-300",
-              // "dark:bg-neutral-900",
+              // "dark:bg-neutral-950",
               // "border",
               // "rounded",
             )}
@@ -94,7 +96,10 @@ export default function Header() {
             "gap-2",
           )}
         >
-          <NextLink href="/about" className={cn("px-3", "hover:underline")}>
+          <NextLink
+            href="/about"
+            className={cn("px-3", "hover:underline", "max-lg:hidden")}
+          >
             About
           </NextLink>
 
@@ -134,12 +139,15 @@ export default function Header() {
 }
 
 function User({ session }: { session: Session }) {
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  const isSystem = theme === "system";
+  const isDark = resolvedTheme === "dark";
   return (
     <Popover>
       <PopoverTrigger asChild className={cn("max-lg:hidden")}>
         <Button
           variant="ghost"
-          className={cn("aspect-square", "!p-0", "!rounded-none")}
+          className={cn("aspect-square", "!p-0", "!rounded-full")}
         >
           <Avatar
             className={cn(
@@ -179,6 +187,30 @@ function User({ session }: { session: Session }) {
             )}
           </li>
         </ul>
+        <div className={cn("flex", "items-center", "justify-between", "py-2")}>
+          <div>Theme:</div>
+          <div className={cn("flex", "gap-1", "items-center")}>
+            <Switch
+              checked={isDark}
+              onCheckedChange={() => setTheme(isDark ? "light" : "dark")}
+              className={cn("!transition-all")}
+            />
+            <Button
+              variant="secondary"
+              onClick={() => setTheme("system")}
+              className={cn(
+                "w-6",
+                "h-6",
+                "rounded-full",
+                "p-0",
+                isSystem && "bg-neutral-100",
+                isSystem && "dark:bg-neutral-800",
+              )}
+            >
+              <LaptopIcon className={cn("!w-3")} />
+            </Button>
+          </div>
+        </div>
         <div className={cn("pt-2")}>
           <Button
             variant="secondary"
