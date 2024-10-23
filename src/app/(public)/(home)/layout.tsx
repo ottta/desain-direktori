@@ -1,5 +1,3 @@
-import HeaderProfile from "./HeaderProfile";
-
 import { ReactNode } from "react";
 
 import { cn } from "@/libs/utils";
@@ -8,24 +6,46 @@ export default function Layout({
   children,
   profile,
   hero,
+  navigation,
 }: {
   children: ReactNode;
   profile: ReactNode;
   hero: ReactNode;
+  navigation: ReactNode;
 }) {
   return (
     <>
       {hero}
 
       <div data-container data-grid>
-        <div className={cn("col-span-6")}>{children}</div>
-
-        <div className={cn("col-span-6")}>
-          <div className={cn("sticky", "top-0", "pt-16", "lg:pt-14", "-mt-14")}>
-            <HeaderProfile />
+        <div
+          className={cn(
+            "col-span-6",
+            "sticky",
+            "top-0",
+            "pt-16",
+            "lg:relative",
+            "lg:top-0",
+            "lg:pt-0",
+            "z-20",
+          )}
+        >
+          <div
+            className={cn(
+              "@container",
+              "sticky",
+              "top-0",
+              "pt-16",
+              "lg:pt-14",
+              "-mt-16",
+              "lg:-mt-14",
+            )}
+          >
+            {navigation}
             {profile}
           </div>
         </div>
+        <div className={cn("col-span-6")}>{children}</div>
       </div>
     </>
   );

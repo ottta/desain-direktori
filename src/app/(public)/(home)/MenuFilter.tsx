@@ -5,12 +5,13 @@ import { IDiscipline } from "@/types/discipline";
 import { useScrollInfo } from "@faceless-ui/scroll-info";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import NextLink from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { ReactNode, useEffect, useRef } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import { cn } from "@/libs/utils";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
@@ -83,11 +84,12 @@ function CustomButton({
             "top-0",
             "left-1",
             "-translate-y-1/2",
-            "bg-neutral-950",
-            "text-neutral-100",
+            "bg-red-100",
+            "text-neutral-900",
             "px-2",
             "rounded-full",
-            "text-xs",
+            "text-[11px]",
+            "leading-[1.2]",
             "select-none",
             "border",
           )}
@@ -108,6 +110,72 @@ function CustomButton({
         <CaretSortIcon />
       </Button>
     </PopoverTrigger>
+  );
+}
+
+function SearchInput() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState(
+    searchParams.get("search")?.toString() ?? "",
+  );
+
+  const handleSearch = useCallback(() => {
+    const sParams = new URLSearchParams(searchParams);
+    const stateSearch = !!search;
+    const hasQuerySearch = sParams.has("search");
+
+    if (stateSearch) {
+      if (search.length < 3) return; // Only run if input more than 3 characters
+      if (search === sParams.get("search")?.toString()) return; // Nilainya sama
+      if (hasQuerySearch) {
+        sParams.set("search", search);
+      } else {
+        sParams.append("search", search);
+      }
+    } else if (!stateSearch && hasQuerySearch) {
+      sParams.delete("search");
+    } else {
+      return;
+    }
+
+    return router.push(
+      sParams.size > 0 ? pathname + "?" + sParams.toString() : pathname,
+    );
+  }, [search, searchParams]);
+
+  return (
+    <div className={cn("relative", "col-span-2")}>
+      <div
+        className={cn(
+          "absolute",
+          "top-0",
+          "left-1",
+          "-translate-y-1/2",
+          "bg-red-100",
+          "text-neutral-900",
+          "px-2",
+          "rounded-full",
+          "text-[11px]",
+          "leading-[1.2]",
+          "select-none",
+          "border",
+        )}
+      >
+        Name
+      </div>
+      <Input
+        type="text"
+        placeholder="Search Name..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        onBlur={handleSearch}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") return handleSearch();
+        }}
+      />
+    </div>
   );
 }
 
@@ -141,34 +209,34 @@ export default function MenuFilter(props: {
       ref={ref}
       className={cn(
         "sticky",
+        // "top-[calc(25svh+4rem)]",
         "top-0",
-        "pt-16",
+        "pt-[calc(25svh+4rem)]",
         "lg:pt-14",
-        "-mt-14",
+        "-mt-[calc(25svh+4rem)]",
+        "lg:-mt-14",
         "bg-neutral-100",
-        "dark:bg-neutral-900",
+        "dark:bg-neutral-950",
         "flex",
         "max-lg:-mx-4",
         "z-10",
+        "max-lg:px-4",
+        "scroll-mt-0",
       )}
     >
       <div
         className={cn(
           "grid",
           "grid-cols-6",
-          "h-20",
+          "h-16",
           "lg:h-14",
-          // "overflow-hidden",
-          // "flex",
           "items-center",
           "gap-1",
-          // "px-2",
-          // "text-sm",
           "w-full",
           "border-b",
         )}
       >
-        {/* <div className={cn("col-span-2")}>Filter: </div> */}
+        <SearchInput />
         <Popover>
           <CustomButton label="City">
             {cities.find((item) => item.slug === searchParams.get("city"))

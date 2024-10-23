@@ -18,8 +18,8 @@ export default async function Page({
   const [disciplines, cities, data] = await Promise.all([
     getDisciplines(),
     getCities(),
-    await fetcher<ResponseTenant>(
-      `${NEXT_PUBLIC_HOST}/api/tenants?city=${nSearch.city ?? "all"}&discipline=${nSearch.discipline ?? "all"}&category=${nSearch.category ?? "all"}&limit=${nSearch.limit ?? 24}`,
+    fetcher<ResponseTenant>(
+      `${NEXT_PUBLIC_HOST}/api/tenants?city=${nSearch.city ?? "all"}&discipline=${nSearch.discipline ?? "all"}&category=${nSearch.category ?? "all"}&limit=${nSearch.limit ?? 24}&search=${nSearch.search ?? ""}`,
       { next: { tags: ["tenants"], revalidate: 5 } },
     ),
   ]);
