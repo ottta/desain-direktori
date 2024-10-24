@@ -127,7 +127,7 @@ function SearchInput() {
     const hasQuerySearch = sParams.has("search");
 
     if (stateSearch) {
-      if (search.length < 3) return; // Only run if input more than 3 characters
+      if (search.length < 1) return; // Only run if input more than 1 character
       if (search === sParams.get("search")?.toString()) return; // Nilainya sama
       if (hasQuerySearch) {
         sParams.set("search", search);
@@ -143,7 +143,7 @@ function SearchInput() {
     return router.push(
       sParams.size > 0 ? pathname + "?" + sParams.toString() : pathname,
     );
-  }, [search, searchParams]);
+  }, [search, searchParams, pathname, router]);
 
   return (
     <div className={cn("relative", "col-span-2")}>
@@ -333,83 +333,6 @@ export default function MenuFilter(props: {
           </PopoverContent>
         </Popover>
       </div>
-
-      {/* <div className={cn("h-20", "lg:h-14", "overflow-hidden")}>
-        <ul
-          className={cn(
-            "scroll-hidden",
-            "flex",
-            "gap-1",
-            "my-1",
-            "overflow-x-scroll",
-            "max-lg:px-4",
-          )}
-        >
-          {cities.map((item, i) => {
-            const isActive = item.slug === searchParams.get("city");
-
-            const search = new URLSearchParams(searchParams.toString());
-            if (item.slug === "all" && !!searchParams.get("city")) {
-              search.delete("city");
-            } else {
-              search.set("city", item.slug);
-            }
-
-            const href =
-              search.size > 0 ? pathname + "?" + search.toString() : pathname;
-            return (
-              <Chip
-                key={i}
-                href={href}
-                label={item.name}
-                active={
-                  item.slug === "all" && !searchParams.get("city")
-                    ? true
-                    : isActive
-                }
-              />
-            );
-          })}
-        </ul>
-
-        <ul
-          className={cn(
-            "scroll-hidden",
-            "flex",
-            "gap-1",
-            "my-1",
-            "overflow-x-scroll",
-            "max-lg:px-4",
-          )}
-        >
-          {disciplines.map((item, i) => {
-            const isActive = item.slug === searchParams.get("discipline");
-
-            const search = new URLSearchParams(searchParams.toString());
-            if (item.slug === "all" && !!searchParams.get("discipline")) {
-              search.delete("discipline");
-            } else {
-              search.set("discipline", item.slug);
-            }
-
-            const href =
-              search.size > 0 ? pathname + "?" + search.toString() : pathname;
-
-            return (
-              <Chip
-                key={i}
-                href={href}
-                label={item.name}
-                active={
-                  item.slug === "all" && !searchParams.get("discipline")
-                    ? true
-                    : isActive
-                }
-              />
-            );
-          })}
-        </ul>
-      </div> */}
     </menu>
   );
 }
