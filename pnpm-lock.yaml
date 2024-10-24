@@ -101,9 +101,6 @@ importers:
       swr:
         specifier: ^2.2.5
         version: 2.2.5(react@18.3.1)
-      typed-route-handler:
-        specifier: ^0.4.0
-        version: 0.4.0(next@15.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(zod@3.23.8)
       usehooks-ts:
         specifier: ^3.1.0
         version: 3.1.0(react@18.3.1)
@@ -2783,12 +2780,6 @@ packages:
   typed-array-length@1.0.6:
     resolution: {integrity: sha512-/OxDN6OtAk5KBpGb28T+HZc2M+ADtvRxXrKKbUwtsLgdoxgX13hyy7ek6bFRl5+aBs2yZzB0c4CnQfAtVypW/g==}
     engines: {node: '>= 0.4'}
-
-  typed-route-handler@0.4.0:
-    resolution: {integrity: sha512-5Hg2Z8F44EXvX05N2Vmvf78sUpogi+JJVjUC7ojPw5qLDp0Ennzosl2Da35VY9JKmxN+Z2TVonGCnHjJ/KyOIw==}
-    peerDependencies:
-      next: '>= 15'
-      zod: '>= 3.22'
 
   types-react-dom@19.0.0-rc.1:
     resolution: {integrity: sha512-VSLZJl8VXCD0fAWp7DUTFUDCcZ8DVXOQmjhJMD03odgeFmu14ZQJHCXeETm3BEAhJqfgJaFkLnGkQv88sRx0fQ==}
@@ -5715,11 +5706,6 @@ snapshots:
       has-proto: 1.0.3
       is-typed-array: 1.1.13
       possible-typed-array-names: 1.0.0
-
-  typed-route-handler@0.4.0(next@15.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(zod@3.23.8):
-    dependencies:
-      next: 15.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      zod: 3.23.8
 
   types-react-dom@19.0.0-rc.1:
     dependencies:

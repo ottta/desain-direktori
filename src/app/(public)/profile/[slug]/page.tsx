@@ -5,9 +5,9 @@ import { Metadata } from "next";
 import NextImage from "next/image";
 import NextLink from "next/link";
 import { notFound } from "next/navigation";
-import { typedFetch } from "typed-route-handler/client";
 
 import { API_TENANTS, NEXT_PUBLIC_HOST } from "@/libs/constants";
+import { fetcher } from "@/libs/fetch";
 import { cn } from "@/libs/utils";
 
 type PageProps = {
@@ -17,7 +17,7 @@ type PageProps = {
 
 async function getTenant(slug: string) {
   const endpoint = new URL(`${API_TENANTS}/${slug}`, NEXT_PUBLIC_HOST);
-  const req = await typedFetch<ResponseTenant>(endpoint.href);
+  const req = await fetcher<ResponseTenant>(endpoint.href);
   return req;
 }
 

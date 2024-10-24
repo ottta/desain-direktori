@@ -2,10 +2,8 @@ import MenuFilter from "./MenuFilter";
 
 import { ResponseTenants } from "@/types/tenants";
 
-import { typedFetch } from "typed-route-handler/client";
-
 import { API_TENANTS, NEXT_PUBLIC_HOST } from "@/libs/constants";
-import { getCities, getDisciplines } from "@/libs/fetch";
+import { fetcher, getCities, getDisciplines } from "@/libs/fetch";
 import { cn } from "@/libs/utils";
 
 import Tenants from "@/components/Tenants";
@@ -31,7 +29,7 @@ export default async function Page({
   const [disciplines, cities, data] = await Promise.all([
     getDisciplines(),
     getCities(),
-    typedFetch<ResponseTenants>(endpoint.href, {
+    fetcher<ResponseTenants>(endpoint.href, {
       next: { tags: ["tenants"], revalidate: 5 },
     }),
   ]);
