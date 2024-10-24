@@ -2,7 +2,7 @@
 
 import { AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
-import { DialogTitle } from "./ui/dialog";
+import { DialogDescription, DialogTitle } from "./ui/dialog";
 import {
   Drawer,
   DrawerContent,
@@ -34,6 +34,7 @@ export default function Header() {
         "z-50",
         "bg-neutral-100",
         "dark:bg-neutral-950",
+        "overflow-hidden",
         // "transition",
         // "duration-500",
       )}
@@ -69,7 +70,7 @@ export default function Header() {
           </NextLink>
         </div>
 
-        <div
+        {/* <div
           className={cn(
             "col-span-3",
             "flex",
@@ -84,24 +85,26 @@ export default function Header() {
           >
             Submission
           </NextLink>
-        </div>
+        </div> */}
 
         <div
           className={cn(
             "col-span-3",
-            "col-start-10",
+            "lg:col-start-10",
             "flex",
             "items-center",
             "justify-end",
             "gap-2",
+            "px-3",
+            "lg:px-0",
           )}
         >
-          <NextLink
+          {/* <NextLink
             href="/about"
             className={cn("px-3", "hover:underline", "max-lg:hidden")}
           >
             About
-          </NextLink>
+          </NextLink> */}
 
           {session && session.user ? (
             <User session={session} />
@@ -125,13 +128,13 @@ export default function Header() {
             <DrawerPortal>
               <DrawerContent
                 data-container
-                className={cn("h-fit", "min-h-[88.88svh]")}
+                className={cn("h-fit", "min-h-[88.88svh]", "p-3")}
               >
-                <div>
-                  <DialogTitle>Title</DialogTitle>
-                  This Content
-                </div>
-                <NextLink href="/about">About</NextLink>
+                <DialogTitle>Title</DialogTitle>
+                <DialogDescription>This Description</DialogDescription>
+                <NextLink href="/about" className={cn("text-6xl")}>
+                  About
+                </NextLink>
               </DrawerContent>
             </DrawerPortal>
           </Drawer>

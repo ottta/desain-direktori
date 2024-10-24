@@ -218,10 +218,9 @@ export default function MenuFilter(props: {
         "bg-neutral-100",
         "dark:bg-neutral-950",
         "flex",
-        "max-lg:-mx-4",
         "z-10",
-        "max-lg:px-4",
         "scroll-mt-0",
+        "overflow-hidden",
       )}
     >
       <div
@@ -234,6 +233,8 @@ export default function MenuFilter(props: {
           "gap-1",
           "w-full",
           "border-b",
+          "px-3",
+          "lg:px-0",
         )}
       >
         <SearchInput />

@@ -3,6 +3,8 @@ import slugify from "slugify";
 
 import { twMerge } from "tailwind-merge";
 
+const isDevelopment = process.env.NODE_ENV === "development";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -24,4 +26,19 @@ export function groupBy<T, K extends keyof unknown>(
     }
     return groups;
   }, new Map<K, T[]>());
+}
+
+/**
+ * Method to simulate loading behavior
+ * @param delay number
+ * @param returnValue any
+ * @returns Promise<any>
+ */
+export function ASYNC_TIMEOUT<T>(delay: number, returnValue: T): Promise<T> {
+  if (isDevelopment)
+    return new Promise((resolve) =>
+      setTimeout(() => resolve(returnValue), delay),
+    );
+
+  return Promise.resolve(returnValue);
 }

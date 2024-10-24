@@ -3,6 +3,7 @@ import "./globals.css";
 
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import NextTopLoader from "nextjs-toploader";
 import { ReactNode } from "react";
 
 import { cn } from "@/libs/utils";
@@ -50,6 +51,7 @@ export default async function RootLayout({
     >
       <body>
         <Providers>
+          <NextTopLoader color="#ec4899" showSpinner={false} />
           <Header />
           <main
             className={cn("pt-16", "lg:pt-14", "min-h-[calc(100svh-3.5rem)]")}
