@@ -20,7 +20,7 @@ export default async function Page({
   Object.entries(sParams).forEach((item) => {
     const [key, value] = item;
     if (key === "search") {
-      endpoint.searchParams.append(key, value);
+      endpoint.searchParams.append(key, value || "");
     } else {
       endpoint.searchParams.append(key, value || "all");
     }
