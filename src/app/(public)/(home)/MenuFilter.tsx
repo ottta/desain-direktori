@@ -6,7 +6,7 @@ import { useScrollInfo } from "@faceless-ui/scroll-info";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import NextLink from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 
 import { cn } from "@/libs/utils";
 
@@ -121,7 +121,7 @@ function SearchInput() {
     searchParams.get("search")?.toString() ?? "",
   );
 
-  const handleSearch = useCallback(() => {
+  const handleSearch = () => {
     const sParams = new URLSearchParams(searchParams);
     const stateSearch = !!search;
     const hasQuerySearch = sParams.has("search");
@@ -143,7 +143,7 @@ function SearchInput() {
     return router.push(
       sParams.size > 0 ? pathname + "?" + sParams.toString() : pathname,
     );
-  }, [search, searchParams, pathname, router]);
+  };
 
   return (
     <div className={cn("relative", "col-span-2")}>
