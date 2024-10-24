@@ -3,24 +3,28 @@
 import TenantItem from "./TenantItem";
 import useSWRInfinite from "swr/infinite";
 
-import { Tenant } from "@/types/tenants";
+import { ResponseTenants } from "@/types/tenants";
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { typedFetch } from "typed-route-handler/client";
 import { useIntersectionObserver } from "usehooks-ts";
 
-import { fetcher } from "@/libs/fetch";
+import { API_TENANTS, NEXT_PUBLIC_HOST, PAGE_SIZE } from "@/libs/constants";
 import { cn } from "@/libs/utils";
 
-export type ResponseTenant = {
-  data: Tenant[];
-  meta: {
-    cursor: string | null;
-  };
-};
-
-const NEXT_PUBLIC_HOST = process.env.NEXT_PUBLIC_HOST;
-const PAGE_SIZE = 12;
+function useScrolToTop() {
+  const searchParams = useSearchParams();
+  const freezeSearchParams = useRef(searchParams.toString());
+  const ref = useRef<HTMLUListElement>(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    if (searchParams.toString() === freezeSearchParams.current) return;
+    ref.current.scrollIntoView({ behavior: "smooth" });
+    freezeSearchParams.current = searchParams.toString();
+  }, [ref, searchParams, freezeSearchParams]);
+  return ref;
+}
 
 function Skeleton({ length }: { length: number }) {
   return (
@@ -32,28 +36,22 @@ function Skeleton({ length }: { length: number }) {
   );
 }
 
-export default function Tenants({ init }: { init: ResponseTenant }) {
+export default function Tenants({ init }: { init: ResponseTenants }) {
   const searchParams = useSearchParams();
-  const getKey = (index: number, prevData: ResponseTenant) => {
-    if (prevData && !prevData.data) return null;
 
-    const city = searchParams.get("city") || "all";
-    const discipline = searchParams.get("discipline") || "all";
-    const category = searchParams.get("category") || "all";
-    const endpoint = new URL(`/api/tenants`, NEXT_PUBLIC_HOST);
-    endpoint.searchParams.append("city", city);
-    endpoint.searchParams.append("discipline", discipline);
-    endpoint.searchParams.append("category", category);
-
-    if (searchParams.has("search")) {
-      const newKey = searchParams.get("search");
-      if (newKey && newKey.length >= 3) {
-        endpoint.searchParams.append("search", newKey);
+  const getKey = (index: number, prevData: ResponseTenants) => {
+    const endpoint = new URL(API_TENANTS, NEXT_PUBLIC_HOST);
+    Array.from(searchParams.entries()).forEach((item) => {
+      const [key, value] = item;
+      if (searchParams.has(key)) {
+        endpoint.searchParams.set(key, value);
+      } else {
+        endpoint.searchParams.append(key, value);
       }
-    }
+    });
 
+    if (prevData && !prevData.data) return null;
     if (index === 0) return endpoint.href;
-
     endpoint.searchParams.append(
       "cursor",
       prevData.data[prevData.data.length - 1].cursor.toString(),
@@ -62,12 +60,12 @@ export default function Tenants({ init }: { init: ResponseTenant }) {
   };
 
   const { data, error, size, setSize, isValidating, isLoading } =
-    useSWRInfinite<ResponseTenant>(getKey, fetcher, {
+    useSWRInfinite<ResponseTenants>(getKey, typedFetch, {
       fallbackData: [init],
       keepPreviousData: true,
     });
 
-  const tempData: ResponseTenant[] = [];
+  const tempData: ResponseTenants[] = [];
   const tenants = data ? tempData.concat(...data) : [];
   const isLoadingMore =
     isLoading || (size > 0 && data && typeof data[size - 1] === "undefined");
@@ -90,41 +88,30 @@ export default function Tenants({ init }: { init: ResponseTenant }) {
     isLoadingMore,
   ]);
 
-  const freezeSearchParams = useRef(searchParams.toString());
-  const refParent = useRef<HTMLUListElement>(null);
-  useEffect(() => {
-    if (!refParent.current) return;
-    if (searchParams.toString() === freezeSearchParams.current) return;
-    refParent.current.scrollIntoView({ behavior: "smooth" });
-    freezeSearchParams.current = searchParams.toString();
-  }, [refParent, searchParams, freezeSearchParams]);
+  const refParent = useScrolToTop();
 
   if (error) return null;
   if (!data) return <Skeleton length={PAGE_SIZE} />;
   if (tenants.length <= 0) return <div>No Data</div>;
 
   return (
-    <>
-      <ul
-        ref={refParent}
-        className={cn(
-          isLoading && "opacity-30",
-          "gap-1",
-          // "space-y-1",
-          "scroll-mt-[calc(25svh+4rem)]",
-          "lg:scroll-mt-28",
-          "divide-y",
-        )}
-      >
-        {data.map((item) =>
-          item.data.map((item, i) => {
-            const { cursor } = item;
-            return <TenantItem key={i} index={cursor} {...item} />;
-          }),
-        )}
-      </ul>
-
-      <div>
+    <ul
+      ref={refParent}
+      className={cn(
+        isLoading && "opacity-30",
+        "gap-1",
+        "scroll-mt-[calc(25svh+4rem)]",
+        "lg:scroll-mt-28",
+        "divide-y",
+      )}
+    >
+      {data.map((item) =>
+        item.data.map((item, i) => {
+          const { cursor } = item;
+          return <TenantItem key={i} index={cursor} {...item} />;
+        }),
+      )}
+      <li>
         <button
           ref={ref}
           disabled={isLoadingMore || isReachingEnd}
@@ -135,7 +122,6 @@ export default function Tenants({ init }: { init: ResponseTenant }) {
             "bg-neutral-100",
             "dark:bg-neutral-900",
             "capitalize",
-            "border-y",
             "disabled:opacity-30",
             "disabled:cursor-not-allowed",
           )}
@@ -146,7 +132,7 @@ export default function Tenants({ init }: { init: ResponseTenant }) {
               ? "no more result"
               : "load more"}
         </button>
-      </div>
-    </>
+      </li>
+    </ul>
   );
 }

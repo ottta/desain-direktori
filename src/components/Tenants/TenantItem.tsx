@@ -11,12 +11,7 @@ import { useEffect, useRef } from "react";
 
 import { cn } from "@/libs/utils";
 
-type BaseData = {
-  name: string;
-  slug: string;
-};
-
-type TenantItemProps = BaseData & Tenant & { index: number };
+type TenantItemProps = Tenant & { index: number };
 
 const TenantLink = ({
   name,
@@ -27,8 +22,16 @@ const TenantLink = ({
   slug: string;
   isActive: boolean;
 }) => {
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const sParams = new URLSearchParams(searchParams);
+
+  if (!sParams.has("modal")) {
+    sParams.append("modal", "true");
+  }
+  if (!sParams.has("source")) {
+    sParams.append("source", pathname.toString());
+  }
 
   const href = `/profile/${slug}${sParams.size > 0 ? `?${sParams.toString()}` : ""}`;
 
@@ -74,8 +77,8 @@ const TenantLink = ({
   );
 };
 
-const TenantItem = (props: TenantItemProps) => {
-  const { name, slug, discipline, established_at, avatar_url } = props;
+export default function TenantItem(props: TenantItemProps) {
+  const { name, slug, discipline, address, established_at, avatar_url } = props;
 
   const pathname = usePathname();
   const isActive = pathname === `/profile/${slug}`;
@@ -143,7 +146,13 @@ const TenantItem = (props: TenantItemProps) => {
             )}
           >
             {discipline.map((item, i) => (
-              <span key={i}>{item.name}</span>
+              <span key={i} className={cn("font-bold")}>
+                {item.name}
+              </span>
+            ))}{" "}
+            in{" "}
+            {address.map((item, i) => (
+              <span key={i}>{item.city.name}</span>
             ))}
           </div>
         </div>
@@ -151,6 +160,4 @@ const TenantItem = (props: TenantItemProps) => {
       <div>{new Date(established_at).getFullYear()}</div>
     </li>
   );
-};
-
-export default TenantItem;
+}

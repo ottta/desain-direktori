@@ -115,7 +115,10 @@ export default function Header() {
 
           <Drawer>
             <DrawerTrigger asChild className={cn("lg:hidden")}>
-              <Button variant="outline" className={cn("aspect-square")}>
+              <Button
+                variant="outline"
+                className={cn("w-9", "h-9", "rounded-full")}
+              >
                 <HamburgerMenuIcon />
               </Button>
             </DrawerTrigger>

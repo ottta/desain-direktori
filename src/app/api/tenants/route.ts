@@ -1,61 +1,63 @@
 import { prisma } from "@/prisma";
 import { TenantRole, TenantStatus } from "@prisma/client";
 
-const PER_PAGE = 24;
-// const PER_PAGE = 12;
+import { PAGE_SIZE } from "@/libs/constants";
 
 type TenantStatusKey = keyof typeof TenantStatus;
+type TenantRoleKey = keyof typeof TenantRole;
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const limit = searchParams.get("limit") || PER_PAGE;
+
   const cursor = searchParams.get("cursor") || null;
   const search = searchParams.get("search") || "";
 
-  const qDiscipline = searchParams.get("discipline") || "all";
-  const qCity = searchParams.get("city") || "all";
-  const qCategory = searchParams.get("category") || "all";
-  const qStatus = (
+  const discipline = searchParams.get("discipline") || "all";
+  const city = searchParams.get("city") || "all";
+  const category = (
+    searchParams.get("category") || "all"
+  ).toUpperCase() as TenantRoleKey;
+  const status = (
     searchParams.get("status") || "publish"
   ).toUpperCase() as TenantStatusKey;
 
-  const data = await prisma.tenant.findMany({
-    take: Number(limit), // Page size
-    ...(cursor && {
-      skip: 1,
-      cursor: {
-        cursor: Number(cursor),
+  try {
+    const data = await prisma.tenant.findMany({
+      take: PAGE_SIZE, // Page size
+      orderBy: { cursor: "desc" },
+      include: {
+        address: { select: { city: { select: { name: true, slug: true } } } },
+        discipline: { select: { name: true, slug: true } },
+        media: { select: { title: true, url: true } },
+        author: { select: { id: true, name: true, email: true, image: true } },
       },
-    }),
-    orderBy: { cursor: "desc" },
-    include: {
-      address: { select: { city: { select: { name: true, slug: true } } } },
-      discipline: { select: { name: true, slug: true } },
-      media: { select: { title: true, url: true } },
-      author: { select: { id: true, name: true, email: true, image: true } },
-    },
-    where: {
-      ...(!!search ? { name: { contains: search, mode: "insensitive" } } : {}),
-      status: qStatus.includes("-")
-        ? { not: qStatus.replace(/-/g, "") as TenantStatusKey }
-        : qStatus,
-      address: {
-        some: { city: { slug: qCity && qCity !== "all" ? qCity : undefined } },
-      },
-      discipline: {
-        some: {
-          slug: qDiscipline && qDiscipline !== "all" ? qDiscipline : undefined,
+      // Cursor based pagination
+      ...(cursor && { skip: 1, cursor: { cursor: Number(cursor) } }),
+      where: {
+        address: {
+          some: { city: { slug: city !== "all" ? city : undefined } },
         },
+        discipline: {
+          some: { slug: discipline !== "all" ? discipline : undefined },
+        },
+        // Check for `/?status=-publish`
+        status: status.startsWith("-")
+          ? { not: status.replace(/-/g, "") as TenantStatusKey }
+          : status,
+        // If `?search=` exists
+        ...(!!search
+          ? { name: { contains: search, mode: "insensitive" } }
+          : {}),
+        ...(Object.values(TenantRole).includes(category)
+          ? { type: category }
+          : {}),
       },
-      ...(Object.values(TenantRole).includes(
-        String(qCategory.toUpperCase()) as keyof typeof TenantRole,
-      )
-        ? { type: qCategory.toUpperCase() as keyof typeof TenantRole }
-        : {}),
-    },
-  });
+    });
 
-  return Response.json({ data });
+    return Response.json({ success: true, data });
+  } catch (error) {
+    return Response.json({ success: false, data: [], errors: error });
+  }
 }
 
 // export async function POST(req: Request) {

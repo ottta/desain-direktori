@@ -19,3 +19,16 @@ export type Tenant = {
   cursor: number;
   media: TenantMedia[];
 };
+
+type BaseResponse = {
+  success: boolean;
+  errors?: unknown;
+};
+
+export type ResponseTenant = BaseResponse & {
+  data: Tenant;
+};
+
+export type ResponseTenants = BaseResponse & {
+  data: Tenant[];
+};
