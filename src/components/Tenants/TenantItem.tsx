@@ -22,15 +22,11 @@ const TenantLink = ({
   slug: string;
   isActive: boolean;
 }) => {
-  const pathname = usePathname();
   const searchParams = useSearchParams();
   const sParams = new URLSearchParams(searchParams);
 
   if (!sParams.has("modal")) {
     sParams.append("modal", "true");
-  }
-  if (!sParams.has("source")) {
-    sParams.append("source", pathname.toString());
   }
 
   const href = `/profile/${slug}${sParams.size > 0 ? `?${sParams.toString()}` : ""}`;

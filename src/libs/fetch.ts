@@ -40,23 +40,6 @@ export async function getDisciplines() {
   return data;
 }
 
-export async function getTenants(slug?: string) {
-  if (slug) {
-    const t = await prisma.tenant.findUniqueOrThrow({
-      where: { slug },
-      include: {
-        address: { select: { city: { select: { name: true, slug: true } } } },
-        discipline: { select: { name: true, slug: true } },
-        media: { select: { title: true, url: true } },
-        author: {
-          select: { name: true, email: true, image: true, createdAt: true },
-        },
-      },
-    });
-    return t;
-  }
-}
-
 export async function getGithubContributors() {
   const octokit = new Octokit({ auth: githubToken });
   const data = await octokit.request(
