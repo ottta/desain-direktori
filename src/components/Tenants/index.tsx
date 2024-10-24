@@ -5,7 +5,7 @@ import useSWRInfinite from "swr/infinite";
 
 import { ResponseTenants } from "@/types/tenants";
 
-import { useSearchParams } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
 
@@ -24,16 +24,6 @@ function useScrolToTop() {
     freezeSearchParams.current = searchParams.toString();
   }, [ref, searchParams, freezeSearchParams]);
   return ref;
-}
-
-function Skeleton({ length }: { length: number }) {
-  return (
-    <ul className={cn("flex", "flex-col", "gap-1")}>
-      {Array.from({ length }).map((_, i) => (
-        <li key={i} className={cn("h-12")} />
-      ))}
-    </ul>
-  );
 }
 
 export default function Tenants({ init }: { init: ResponseTenants }) {
@@ -91,24 +81,24 @@ export default function Tenants({ init }: { init: ResponseTenants }) {
   const refParent = useScrolToTop();
 
   if (error) return null;
-  if (!data) return <Skeleton length={PAGE_SIZE} />;
+  if (!data) return notFound();
   if (tenants.length <= 0) return <div>No Data</div>;
 
   return (
     <ul
       ref={refParent}
       className={cn(
-        isLoading && "opacity-30",
+        isLoadingMore && "opacity-40",
         "gap-1",
-        "scroll-mt-[calc(25svh+4rem)]",
+        "scroll-mt-[calc(25svh+8rem)]",
         "lg:scroll-mt-28",
         "divide-y",
+        "relative",
       )}
     >
       {data.map((item) =>
         item.data.map((item, i) => {
-          const { cursor } = item;
-          return <TenantItem key={i} index={cursor} {...item} />;
+          return <TenantItem key={i} isLoading={isLoadingMore} {...item} />;
         }),
       )}
       <li>

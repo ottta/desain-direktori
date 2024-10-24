@@ -11,7 +11,7 @@ import { useEffect, useRef } from "react";
 
 import { cn } from "@/libs/utils";
 
-type TenantItemProps = Tenant & { index: number };
+type TenantItemProps = Tenant & { isLoading?: boolean };
 
 const TenantLink = ({
   name,
@@ -25,10 +25,6 @@ const TenantLink = ({
   const searchParams = useSearchParams();
   const sParams = new URLSearchParams(searchParams);
 
-  if (!sParams.has("modal")) {
-    sParams.append("modal", "true");
-  }
-
   const href = `/profile/${slug}${sParams.size > 0 ? `?${sParams.toString()}` : ""}`;
 
   const query = sParams.has("search")
@@ -39,10 +35,7 @@ const TenantLink = ({
     <NextLink
       href={href}
       className={cn(
-        "peer",
         "px-2",
-        "visited:text-neutral-500",
-        "visited:line-through",
         "overflow-hidden",
         "whitespace-nowrap",
         "text-ellipsis",
@@ -53,6 +46,8 @@ const TenantLink = ({
         "relative",
         "group-hover:underline",
         isActive && "underline",
+        "visited:text-neutral-400",
+        "visited:dark:text-neutral-600",
       )}
     >
       <div
@@ -74,7 +69,15 @@ const TenantLink = ({
 };
 
 export default function TenantItem(props: TenantItemProps) {
-  const { name, slug, discipline, address, established_at, avatar_url } = props;
+  const {
+    name,
+    slug,
+    discipline,
+    address,
+    established_at,
+    avatar_url,
+    isLoading,
+  } = props;
 
   const pathname = usePathname();
   const isActive = pathname === `/profile/${slug}`;
@@ -100,6 +103,8 @@ export default function TenantItem(props: TenantItemProps) {
         !isActive && "hover:dark:bg-neutral-950/20",
         isActive && "bg-neutral-300",
         isActive && "dark:bg-neutral-950/50",
+        isLoading && "touch-none",
+        isLoading && "pointer-events-none",
         "scroll-mt-[calc(25svh+8rem-1px)]",
         "lg:scroll-mt-[calc(7rem-2px)]",
         "py-3",
@@ -139,6 +144,8 @@ export default function TenantItem(props: TenantItemProps) {
               "overflow-hidden",
               "whitespace-nowrap",
               "text-ellipsis",
+              "text-neutral-400",
+              "dark:text-neutral-600",
             )}
           >
             {discipline.map((item, i) => (

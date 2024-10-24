@@ -4,6 +4,8 @@ import { ReactNode } from "react";
 
 import { cn } from "@/libs/utils";
 
+import HeaderProfile from "@/components/HeaderProfile";
+
 function Highlight({ children }: { children: ReactNode }) {
   return (
     <span
@@ -27,20 +29,9 @@ export default async function Page() {
 
   return (
     <>
-      <div
-        className={cn(
-          "h-20",
-          "lg:h-14",
-          "flex",
-          "items-center",
-          "border-b",
-          "bg-neutral-100",
-          "dark:bg-neutral-950",
-          "max-lg:hidden",
-        )}
-      >
-        <div className={cn("px-3")}>Directus Emeritus</div>
-      </div>
+      <HeaderProfile className={cn("max-lg:hidden")}>
+        Directus Emeritus
+      </HeaderProfile>
 
       <div
         className={cn(

@@ -8,7 +8,9 @@ import { notFound } from "next/navigation";
 
 import { API_TENANTS, NEXT_PUBLIC_HOST } from "@/libs/constants";
 import { fetcher } from "@/libs/fetch";
-import { cn } from "@/libs/utils";
+import { ASYNC_TIMEOUT, cn } from "@/libs/utils";
+
+import HeaderProfile from "@/components/HeaderProfile";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -37,6 +39,8 @@ export default async function Page({ params, searchParams }: PageProps) {
   const { slug } = await params;
   const sParams = await searchParams;
 
+  await ASYNC_TIMEOUT(1000, null);
+
   const { success, data } = await getTenant(slug);
   if (!success) notFound();
   if (!data) notFound();
@@ -47,92 +51,65 @@ export default async function Page({ params, searchParams }: PageProps) {
   const href = nParams.size > 0 ? `/?${nParams.toString()}` : "/";
   return (
     <>
-      <div
-        data-container
-        className={cn(
-          "h-[25svh]",
-          "lg:h-[calc(100svh-7rem)]",
-          // "@xs:bg-neutral-100",
-          "@lg:px-0",
-          "overflow-hidden",
-        )}
-      >
-        {sParams.modal && (
+      <HeaderProfile>
+        <div>{data.name}</div>
+        <NextLink
+          href={href}
+          scroll={false} // Its important prevent scroll juggling
+          className={cn(
+            "pr-3",
+            "pl-2",
+            "border",
+            "rounded-full",
+            "bg-red-100",
+            "hover:bg-red-100/80",
+            "dark:bg-red-600",
+            "dark:hover:bg-red-600/80",
+            "flex",
+            "items-center",
+            "gap-1",
+            "h-7",
+          )}
+        >
+          <Cross1Icon /> Close
+        </NextLink>
+      </HeaderProfile>
+
+      <div data-grid className={cn("@xs:grid-cols-6", "p-3")}>
+        <div className={cn("col-span-6", "flex", "items-start", "gap-2")}>
           <div
             className={cn(
-              // "h-12",
-              "lg:h-14",
-              "flex",
-              "items-center",
-              // "justify-end",
-              "lg:justify-normal",
-              "lg:border-b",
-              "bg-neutral-100",
-              "dark:bg-neutral-950",
-              "w-full",
-              // "max-lg:hidden",
-              // "@xs:bg-red-300",
-              // "@xs:absolute",
+              "relative",
+              "aspect-square",
+              "overflow-hidden",
+              "w-24",
+              "shrink-0",
             )}
           >
-            <NextLink
-              href={href}
-              scroll={false}
-              className={cn(
-                "pr-3",
-                "pl-2",
-                "border",
-                "rounded-full",
-                "bg-red-100",
-                "hover:bg-red-100/80",
-                "dark:bg-red-600",
-                "dark:hover:bg-red-600/80",
-                "flex",
-                "items-center",
-                "gap-1",
-              )}
-            >
-              <Cross1Icon /> Close
-            </NextLink>
+            <NextImage
+              fill
+              priority
+              alt={data.name}
+              src={data.avatar_url}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
           </div>
-        )}
-
-        <div data-grid className={cn("@xs:grid-cols-6", "p-3")}>
-          <div className={cn("col-span-6", "flex", "items-start", "gap-2")}>
-            <div
-              className={cn(
-                "relative",
-                "aspect-square",
-                "overflow-hidden",
-                "w-24",
-                "shrink-0",
-              )}
-            >
-              <NextImage
-                fill
-                priority
-                alt={data.name}
-                src={data.avatar_url}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              />
+          <div>
+            <div className={cn("text-3xl", "lg:text-5xl", "font-bold")}>
+              {data.name}
             </div>
-            <div>
-              <div className={cn("text-3xl", "lg:text-5xl", "font-bold")}>
-                {data.name}
-              </div>
-              <div>{data.type}</div>
-              <ul>
-                {data.discipline.map((item, i) => (
-                  <li key={i}>{item.name}</li>
-                ))}
-              </ul>
-            </div>
+            <div>{data.type}</div>
+            <ul>
+              {data.discipline.map((item, i) => (
+                <li key={i}>{item.name}</li>
+              ))}
+            </ul>
           </div>
+        </div>
 
-          <div className={cn("col-span-6", "py-2")}>
-            <a href={`/profile/${slug}`}>Detail</a>
-            {/* <pre>{JSON.stringify({ success, data }, null, 2)}</pre> */}
-          </div>
+        <div className={cn("col-span-6", "py-2")}>
+          <a href={`/profile/${slug}`}>Detail</a>
+          {/* <pre>{JSON.stringify({ success, data }, null, 2)}</pre> */}
         </div>
       </div>
     </>
