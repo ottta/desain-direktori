@@ -7,10 +7,10 @@ import { ResponseTenants } from "@/types/tenants";
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { typedFetch } from "typed-route-handler/client";
 import { useIntersectionObserver } from "usehooks-ts";
 
 import { API_TENANTS, NEXT_PUBLIC_HOST, PAGE_SIZE } from "@/libs/constants";
+import { fetcher } from "@/libs/fetch";
 import { cn } from "@/libs/utils";
 
 function useScrolToTop() {
@@ -60,7 +60,7 @@ export default function Tenants({ init }: { init: ResponseTenants }) {
   };
 
   const { data, error, size, setSize, isValidating, isLoading } =
-    useSWRInfinite<ResponseTenants>(getKey, typedFetch, {
+    useSWRInfinite<ResponseTenants>(getKey, fetcher, {
       fallbackData: [init],
       keepPreviousData: true,
     });
