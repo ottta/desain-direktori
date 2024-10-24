@@ -1,22 +1,25 @@
 import { prisma } from "@/prisma";
 
 export async function GET(
-  _req: Request,
+  _: Request,
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
-  const tenant = await prisma.tenant.findUnique({
-    where: { slug },
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-      address: true,
-      discipline: true,
-      established_at: true,
-      created_at: true,
-      updated_at: true,
-    },
-  });
-  return Response.json({ data: tenant });
+  try {
+    const tenant = await prisma.tenant.findUnique({
+      where: { slug },
+      include: {
+        address: { select: { city: { select: { name: true, slug: true } } } },
+        discipline: { select: { name: true, slug: true } },
+        media: { select: { title: true, url: true } },
+        author: {
+          select: { name: true, email: true, image: true, createdAt: true },
+        },
+      },
+    });
+
+    return Response.json({ success: true, data: tenant });
+  } catch (error) {
+    return Response.json({ success: false, data: null, erors: error });
+  }
 }
