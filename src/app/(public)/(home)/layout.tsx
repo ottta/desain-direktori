@@ -6,12 +6,10 @@ export default function Layout({
   children,
   profile,
   hero,
-  navigation,
 }: {
   children: ReactNode;
   profile: ReactNode;
   hero: ReactNode;
-  navigation: ReactNode;
 }) {
   return (
     <>
@@ -41,7 +39,6 @@ export default function Layout({
               "lg:-mt-14",
             )}
           >
-            {navigation}
             {profile}
           </div>
         </div>
