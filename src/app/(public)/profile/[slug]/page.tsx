@@ -14,7 +14,7 @@ import HeaderProfile from "@/components/HeaderProfile";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ modal?: string }>;
+  searchParams: Promise<{ [key: string]: string }>;
 };
 
 async function getTenant(slug: string) {
@@ -38,23 +38,27 @@ export async function generateMetadata({
 export default async function Page({ params, searchParams }: PageProps) {
   const { slug } = await params;
   const sParams = await searchParams;
+  const endpoint = new URL("/", NEXT_PUBLIC_HOST);
+  Object.entries(sParams).forEach(([key, value]) => {
+    endpoint.searchParams.append(key, value);
+  });
+
+  if (sParams.callback_url) {
+    endpoint.pathname = sParams.callback_url;
+    endpoint.searchParams.delete("callback_url");
+  }
 
   await ASYNC_TIMEOUT(1000, null);
 
   const { success, data } = await getTenant(slug);
   if (!success) notFound();
   if (!data) notFound();
-  const nParams = new URLSearchParams(sParams);
-  if (nParams.has("modal")) {
-    nParams.delete("modal");
-  }
-  const href = nParams.size > 0 ? `/?${nParams.toString()}` : "/";
   return (
     <>
       <HeaderProfile>
         <div>{data.name}</div>
         <NextLink
-          href={href}
+          href={endpoint.href}
           scroll={false} // Its important prevent scroll juggling
           className={cn(
             "pr-3",
