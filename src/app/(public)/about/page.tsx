@@ -27,7 +27,7 @@ export default async function About() {
   ]);
 
   return (
-    <div data-container className={cn("py-0", "lg:py-28")}>
+    <div data-container className={cn("py-0", "lg:py-28", "min-h-[200svh]")}>
       <article
         dangerouslySetInnerHTML={{
           __html: about

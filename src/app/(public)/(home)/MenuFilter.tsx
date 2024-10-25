@@ -1,17 +1,21 @@
 "use client";
 
+import FilterMobile from "./FilterMobile";
+import FilterSearch from "./FilterSearch";
+
 import { IDiscipline } from "@/types/discipline";
 
 import { useScrollInfo } from "@faceless-ui/scroll-info";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import NextLink from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { KeyboardEvent, ReactNode, useEffect, useRef, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { ReactNode, useEffect, useRef } from "react";
+import { useMediaQuery } from "usehooks-ts";
 
+import { MEDIA_MAX_MD } from "@/libs/constants";
 import { cn } from "@/libs/utils";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
@@ -73,10 +77,16 @@ function CustomButton({
   label: string;
 }) {
   return (
-    <PopoverTrigger asChild className={cn("col-span-2")}>
+    <PopoverTrigger asChild className={cn("col-span-3", "lg:col-span-2")}>
       <Button
         variant="secondary"
-        className={cn("relative", "justify-between", "w-full")}
+        className={cn(
+          "relative",
+          "justify-between",
+          "w-full",
+          "h-10",
+          "lg:h-8",
+        )}
       >
         <div
           className={cn(
@@ -113,85 +123,12 @@ function CustomButton({
   );
 }
 
-function SearchInput() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [search, setSearch] = useState(
-    searchParams.get("search")?.toString() ?? "",
-  );
-
-  const refInput = useRef<HTMLInputElement>(null);
-
-  const handleSearch = () => {
-    const sParams = new URLSearchParams(searchParams);
-    const stateSearch = !!search;
-    const hasQuerySearch = sParams.has("search");
-
-    if (stateSearch) {
-      if (search.length < 1) return; // Only run if input more than 1 character
-      if (search === sParams.get("search")?.toString()) return; // Nilainya sama
-      if (hasQuerySearch) {
-        sParams.set("search", search);
-      } else {
-        sParams.append("search", search);
-      }
-    } else if (!stateSearch && hasQuerySearch) {
-      sParams.delete("search");
-    } else {
-      return;
-    }
-
-    return router.push(
-      sParams.size > 0 ? pathname + "?" + sParams.toString() : pathname,
-    );
-  };
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (!refInput.current) return;
-    if (e.key === "Enter") {
-      refInput.current.blur();
-      return handleSearch();
-    }
-  };
-
-  return (
-    <div className={cn("relative", "col-span-2")}>
-      <div
-        className={cn(
-          "absolute",
-          "top-0",
-          "left-1",
-          "-translate-y-1/2",
-          "bg-red-100",
-          "text-neutral-900",
-          "px-2",
-          "rounded-full",
-          "text-[11px]",
-          "leading-[1.2]",
-          "select-none",
-          "border",
-        )}
-      >
-        Name
-      </div>
-      <Input
-        ref={refInput}
-        type="text"
-        placeholder="Search Name..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        onBlur={handleSearch}
-        onKeyDown={handleKeyDown}
-      />
-    </div>
-  );
-}
-
-export default function MenuFilter(props: {
+export type FilterProps = {
   cities: IDiscipline[];
   disciplines: IDiscipline[];
-}) {
+};
+
+function FilterDesktop(props: FilterProps) {
   const { cities, disciplines } = props;
 
   const pathname = usePathname();
@@ -238,7 +175,7 @@ export default function MenuFilter(props: {
         className={cn(
           "grid",
           "grid-cols-6",
-          "h-16",
+          "h-24",
           "lg:h-14",
           "items-center",
           "gap-1",
@@ -248,7 +185,7 @@ export default function MenuFilter(props: {
           "lg:px-0",
         )}
       >
-        <SearchInput />
+        <FilterSearch />
         <Popover>
           <CustomButton label="City">
             {cities.find((item) => item.slug === searchParams.get("city"))
@@ -347,4 +284,14 @@ export default function MenuFilter(props: {
       </div>
     </menu>
   );
+}
+
+export default function MenuFilter(props: FilterProps) {
+  const MAX_MD = useMediaQuery(MEDIA_MAX_MD, {
+    defaultValue: true,
+    initializeWithValue: false,
+  });
+
+  if (MAX_MD) return <FilterMobile {...props} />;
+  return <FilterDesktop {...props} />;
 }

@@ -1,41 +1,49 @@
 "use client";
 
 import ThemeSelector from "./ThemeSelector";
-import { Button } from "./ui/button";
-import { DialogDescription, DialogTitle } from "./ui/dialog";
 import {
   Drawer,
   DrawerContent,
+  DrawerDescription,
   DrawerPortal,
-  DrawerTrigger,
+  DrawerTitle,
 } from "./ui/drawer";
 
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 
-import { MEDIA_MAX_MD } from "@/libs/constants";
+import { LINK_PUBLIC, MEDIA_MAX_MD } from "@/libs/constants";
 import { cn } from "@/libs/utils";
 
+// const snapPoints = ["64px", "512px", 1];
+const snapPoints: (string | number)[] = [0.065, 0.5, 1];
+
 export default function Footer() {
-  const [open, setOpen] = useState(false);
-  // const d = new Date();
-  // const year = d.getFullYear();
+  const [snap, setSnap] = useState<number | string | null>(snapPoints[0]);
+  const d = new Date();
+  const year = d.getFullYear();
   const MAX_MD = useMediaQuery(MEDIA_MAX_MD, {
     defaultValue: false,
     initializeWithValue: false,
   });
 
   const pathname = usePathname();
+  const freezePathname = useRef(pathname);
   useEffect(() => {
     if (!MAX_MD) return;
-    console.log(open, pathname, MAX_MD);
-    if (open) {
-      setOpen(false);
-    }
-  }, [MAX_MD, pathname]);
+    if (freezePathname.current === pathname) return;
+    const handler = () => {
+      if (snap && snapPoints.indexOf(snap) !== 0) {
+        setSnap(snapPoints[0]);
+        freezePathname.current = pathname;
+      }
+    };
+
+    handler();
+  }, [MAX_MD, pathname, snap, freezePathname]);
+
   if (!MAX_MD) return null;
   return (
     <footer
@@ -45,96 +53,89 @@ export default function Footer() {
         "bottom-0",
         "left-0",
         "z-50",
-        // "bg-red-300",
-        "flex",
-        "items-center",
-        "justify-center",
-        "pb-8",
+        "grid",
+        "grid-cols-3",
+        "pb-14",
         "pointer-events-none",
       )}
     >
-      <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerTrigger
-          asChild
-          className={cn("z-[9999]", "pointer-events-auto")}
-        >
-          <Button
-            variant="outline"
-            className={cn(
-              "w-16",
-              "h-16",
-              "rounded-full",
-              "shadow",
-              "z-50",
-              "bg-red-100",
-            )}
-          >
-            {/* <HamburgerMenuIcon /> */}
-            {/* <DoubleArrowUpIcon /> */}
-            <DotsHorizontalIcon className={cn("!w-7", "!h-7")} />
-          </Button>
-        </DrawerTrigger>
+      <Drawer
+        shouldScaleBackground={true}
+        snapPoints={snapPoints}
+        activeSnapPoint={snap}
+        setActiveSnapPoint={setSnap}
+        modal={false}
+        open={true}
+      >
         <DrawerPortal>
           <DrawerContent
-            data-container
-            className={cn("h-fit", "min-h-[66.66svh]", "p-0")}
+            data-testid="content"
+            className={cn(
+              "border-b-none rounded-t-3xl bottom-0 left-0 right-0 h-full",
+              "max-h-vh",
+              "-mx-px",
+              "!shadow-[0rem_-0.5rem_2rem_-1.25rem_#737373]",
+            )}
           >
+            <div className={cn("gap-y-4", "flex", "flex-col", "relative")}>
+              <div
+                className={cn(
+                  "h-16",
+                  "px-3",
+                  "flex",
+                  "justify-between",
+                  "items-start",
+                )}
+              >
+                <div>
+                  <DrawerTitle>+62 | Desain Direktori</DrawerTitle>
+                  <DrawerDescription>
+                    Archiving Indonesia&apos;s creatives.
+                  </DrawerDescription>
+                </div>
+                <ThemeSelector />
+              </div>
+              <ul className={cn("flex", "flex-col", "divide-y")}>
+                {LINK_PUBLIC.map((item, i) => (
+                  <li key={i}>
+                    <NextLink {...item} className={cn("text-4xl", "px-3")}>
+                      {item.label}
+                    </NextLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
             <div
+              data-container
+              data-grid
               className={cn(
-                "px-3",
-                "pt-2",
-                "pb-12",
-                "relative",
-                "flex",
-                "flex-col",
-                "space-y-4",
-                // "divide-y",
+                "h-14",
+                "items-center",
+                "text-xs",
+                "text-neutral-500",
+                "absolute",
+                "bottom-0",
               )}
             >
-              <div>
-                <DialogTitle
-                  className={cn("text-2xl", "flex", "justify-between")}
-                >
-                  <div>+62 | Desain Direktori</div>
-                  <ThemeSelector />
-                </DialogTitle>
-                <DialogDescription>
-                  An online repository for creatives
-                </DialogDescription>
+              <div className={cn("col-span-3", "lg:col-span-2", "px-3")}>
+                Copyright &copy;2024{year !== 2024 && `–${year}`} Unforma Club.
               </div>
-              <div className={cn("flex", "flex-col", "divide-y")}>
-                <NextLink href="/" className={cn("text-6xl")}>
-                  Index
-                </NextLink>
-                <NextLink href="/about" className={cn("text-6xl")}>
-                  About
-                </NextLink>
+              <div className={cn("col-span-3", "px-3")}>
+                Typeface{" "}
+                <a
+                  href="https://unforma.club/font/nouva"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn("underline")}
+                >
+                  Nouva
+                </a>{" "}
+                by Unforma Club.
               </div>
             </div>
           </DrawerContent>
         </DrawerPortal>
       </Drawer>
-      {/* <div
-        data-container
-        data-grid
-        className={cn("h-14", "items-center", "text-xs", "text-neutral-500")}
-      >
-        <div className={cn("col-span-3", "lg:col-span-2")}>
-          Copyright &copy;2024{year !== 2024 && `–${year}`} Unforma Club.
-        </div>
-        <div className={cn("px-2", "col-span-3")}>
-          Typeface{" "}
-          <a
-            href="https://unforma.club/font/nouva"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn("underline")}
-          >
-            Nouva
-          </a>{" "}
-          by Unforma Club.
-        </div>
-      </div> */}
     </footer>
   );
 }

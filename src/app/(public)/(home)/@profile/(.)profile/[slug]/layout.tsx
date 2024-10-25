@@ -7,8 +7,10 @@ export default function Layout({ children }: { children: ReactNode }) {
     <div
       className={cn(
         "h-[33.33svh]",
-        "lg:h-[calc(100svh-0.75rem)]",
-        "overflow-hidden",
+        "lg:h-[calc(100svh-7rem)]",
+        "bg-neutral-100",
+        "dark:bg-neutral-950",
+        "max-md:border-b",
       )}
     >
       {children}
