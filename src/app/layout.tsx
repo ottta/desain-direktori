@@ -8,6 +8,7 @@ import { ReactNode } from "react";
 
 import { cn } from "@/libs/utils";
 
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
 const NEXT_PUBLIC_HOST = process.env.NEXT_PUBLIC_HOST;
@@ -54,10 +55,11 @@ export default async function RootLayout({
           <NextTopLoader color="#ec4899" showSpinner={false} />
           <Header />
           <main
-            className={cn("pt-16", "lg:pt-14", "min-h-[calc(100svh-3.5rem)]")}
+            className={cn("pt-4", "lg:pt-14", "min-h-[calc(100svh-3.5rem)]")}
           >
             {children}
           </main>
+          <Footer />
         </Providers>
       </body>
     </html>

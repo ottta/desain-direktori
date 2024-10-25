@@ -89,19 +89,29 @@ export default function Tenants({ init }: { init: ResponseTenants }) {
       ref={refParent}
       className={cn(
         isLoadingMore && "opacity-40",
-        "gap-1",
-        "scroll-mt-[calc(25svh+8rem)]",
-        "lg:scroll-mt-28",
-        "divide-y",
+        "gap-0",
+        "md:gap-1",
+        // "scroll-mt-[calc(33.33svh+0.75rem)]",
+        "scroll-mt-[calc(33.33svh+4rem)]",
+        "md:scroll-mt-28",
         "relative",
+        "grid",
+        "grid-cols-3",
+        "md:block",
+        "md:divide-y",
+        "max-md:-mt-px",
+        // "max-md:gap-px",
+        // "max-md:bg-neutral-400",
       )}
     >
       {data.map((item) =>
         item.data.map((item, i) => {
-          return <TenantItem key={i} isLoading={isLoadingMore} {...item} />;
+          return (
+            <TenantItem key={i} index={i} isLoading={isLoadingMore} {...item} />
+          );
         }),
       )}
-      <li>
+      <li className={cn("max-md:col-span-full")}>
         <button
           ref={ref}
           disabled={isLoadingMore || isReachingEnd}

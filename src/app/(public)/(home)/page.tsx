@@ -45,7 +45,7 @@ export default async function Page({
     .unshift({ id: "", name: "All", slug: "all", author_id: "" });
 
   return (
-    <div className={cn("pb-24", "min-h-svh", "col-span-6")}>
+    <div className={cn("min-h-svh", "col-span-6")}>
       <MenuFilter cities={cities} disciplines={disciplines} />
       <Tenants init={data} />
     </div>

@@ -27,7 +27,7 @@ export default async function About() {
   ]);
 
   return (
-    <div data-container className={cn("py-28")}>
+    <div data-container className={cn("py-0", "lg:py-28")}>
       <article
         dangerouslySetInnerHTML={{
           __html: about
@@ -37,14 +37,19 @@ export default async function About() {
             .replace("%DATA_CITIES%", cities.toString()),
         }}
         className={cn(
+          "text-neutral-400",
+          "dark:text-neutral-500",
           "max-w-screen-sm",
-          "text-xl",
-          "lg:text-2xl",
+          "text-2xl",
+          // "lg:text-2xl",
           "px-3",
           "mb-12",
           "[&_a:hover]:underline",
           "[&_a]:font-bold",
-          `[&_a:[target="_blank"]]:text-red-500`,
+          "[&_a]:text-neutral-900",
+          "[&_strong]:text-neutral-900",
+          "[&_a]:dark:text-neutral-200",
+          "[&_strong]:dark:text-neutral-200",
         )}
       />
       <div className={cn("px-3")}>
