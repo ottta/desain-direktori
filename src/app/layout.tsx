@@ -54,11 +54,7 @@ export default async function RootLayout({
         <Providers>
           <NextTopLoader color="#ec4899" showSpinner={false} />
           <Header />
-          <main
-            className={cn("pt-4", "lg:pt-14", "min-h-[calc(100svh-3.5rem)]")}
-          >
-            {children}
-          </main>
+          <main className={cn("pt-4", "lg:pt-14")}>{children}</main>
           <Footer />
         </Providers>
       </body>

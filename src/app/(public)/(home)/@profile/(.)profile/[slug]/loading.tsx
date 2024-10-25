@@ -14,7 +14,9 @@ export default function Loading() {
     >
       <HeaderProfile>
         <Skeleton className={cn("h-4", "w-48", "border")} />
-        <Skeleton className={cn("h-7", "w-20", "rounded-full", "border")} />
+        <Skeleton
+          className={cn("h-9", "lg:h-7", "w-20", "rounded-full", "border")}
+        />
       </HeaderProfile>
       <div className={cn("p-3")}>Loading...</div>
     </div>

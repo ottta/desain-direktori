@@ -80,6 +80,12 @@ export default function TenantItem(props: TenantItemProps) {
     return () => clearTimeout(timeout);
   }, [isActive, ref]);
 
+  // const test = [
+  //   "max-md:border-r",
+  //   "max-md:border-x",
+  //   "max-md:border-x",
+  //   "max-md:border-l",
+  // ];
   const test = ["", "max-md:border-x", ""];
 
   return (
@@ -94,7 +100,7 @@ export default function TenantItem(props: TenantItemProps) {
         isActive && "dark:bg-neutral-950/50",
         isLoading && "touch-none",
         isLoading && "pointer-events-none",
-        "scroll-mt-[calc(33.33svh+4.75rem-1px)]",
+        "scroll-mt-[calc(33.33svh-1px)]",
         "md:scroll-mt-[calc(7rem-2px)]",
         "p-0",
         "md:p-3",

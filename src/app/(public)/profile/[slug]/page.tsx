@@ -68,7 +68,8 @@ export default async function Page({ params, searchParams }: PageProps) {
             "flex",
             "items-center",
             "gap-1",
-            "h-7",
+            "h-9",
+            "lg:h-7",
           )}
         >
           <Cross1Icon /> Close

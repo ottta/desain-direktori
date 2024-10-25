@@ -12,7 +12,7 @@ export default function HeaderProfile({
       {...rest}
       className={cn(
         "px-3",
-        "lg:h-14",
+        "h-14",
         "flex",
         "items-center",
         "justify-between",

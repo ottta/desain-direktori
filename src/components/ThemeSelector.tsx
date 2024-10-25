@@ -24,8 +24,8 @@ export default function ThemeSelector() {
         variant="secondary"
         onClick={() => setTheme("system")}
         className={cn(
-          "w-6",
-          "h-6",
+          "w-8",
+          "h-8",
           "rounded-full",
           "p-0",
           isSystem && "bg-neutral-100",

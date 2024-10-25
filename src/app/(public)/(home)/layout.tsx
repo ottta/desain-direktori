@@ -21,7 +21,7 @@ export default function Layout({
             "col-span-6",
             "sticky",
             "top-0",
-            "pt-3",
+            // "pt-3",
             "lg:relative",
             "lg:top-0",
             "lg:pt-0",
@@ -33,9 +33,9 @@ export default function Layout({
               "@container",
               "sticky",
               "top-0",
-              "pt-16",
+              // "pt-16",
               "lg:pt-14",
-              "-mt-16",
+              // "-mt-16",
               "lg:-mt-14",
             )}
           >

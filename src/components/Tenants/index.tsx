@@ -85,40 +85,50 @@ export default function Tenants({ init }: { init: ResponseTenants }) {
   if (tenants.length <= 0) return <div>No Data</div>;
 
   return (
-    <ul
-      ref={refParent}
-      className={cn(
-        isLoadingMore && "opacity-40",
-        "gap-0",
-        "md:gap-1",
-        // "scroll-mt-[calc(33.33svh+0.75rem)]",
-        "scroll-mt-[calc(33.33svh+4rem)]",
-        "md:scroll-mt-28",
-        "relative",
-        "grid",
-        "grid-cols-3",
-        "md:block",
-        "md:divide-y",
-        "max-md:-mt-px",
-        // "max-md:gap-px",
-        // "max-md:bg-neutral-400",
-      )}
-    >
-      {data.map((item) =>
-        item.data.map((item, i) => {
-          return (
-            <TenantItem key={i} index={i} isLoading={isLoadingMore} {...item} />
-          );
-        }),
-      )}
-      <li className={cn("max-md:col-span-full")}>
+    <>
+      <ul
+        ref={refParent}
+        className={cn(
+          // isLoadingMore && "opacity-40",
+          "gap-0",
+          "md:gap-1",
+          // "scroll-mt-[calc(33.33svh+0.75rem)]",
+          "scroll-mt-[calc(33.33svh)]",
+          "md:scroll-mt-28",
+          "relative",
+          "grid",
+          "grid-cols-3",
+          "md:block",
+          "md:divide-y",
+          "max-md:-mt-px",
+          // "max-md:gap-px",
+          // "max-md:bg-neutral-400",
+          // "max-md:pb-16",
+          // "max-md:border-y",
+        )}
+      >
+        {data.map((item) =>
+          item.data.map((item, i) => {
+            return (
+              <TenantItem
+                key={i}
+                index={i}
+                isLoading={isLoadingMore}
+                {...item}
+              />
+            );
+          }),
+        )}
+      </ul>
+
+      <div className={cn("h-16", "mb-16", "border-t")}>
         <button
           ref={ref}
           disabled={isLoadingMore || isReachingEnd}
           onClick={() => setSize(size + 1)}
           className={cn(
             "w-full",
-            "h-14",
+            "h-16",
             "bg-neutral-100",
             "dark:bg-neutral-900",
             "capitalize",
@@ -132,7 +142,7 @@ export default function Tenants({ init }: { init: ResponseTenants }) {
               ? "no more result"
               : "load more"}
         </button>
-      </li>
-    </ul>
+      </div>
+    </>
   );
 }
