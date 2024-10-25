@@ -6,7 +6,7 @@ import { useScrollInfo } from "@faceless-ui/scroll-info";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import NextLink from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { KeyboardEvent, ReactNode, useEffect, useRef, useState } from "react";
 
 import { cn } from "@/libs/utils";
 
@@ -121,6 +121,8 @@ function SearchInput() {
     searchParams.get("search")?.toString() ?? "",
   );
 
+  const refInput = useRef<HTMLInputElement>(null);
+
   const handleSearch = () => {
     const sParams = new URLSearchParams(searchParams);
     const stateSearch = !!search;
@@ -145,6 +147,14 @@ function SearchInput() {
     );
   };
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (!refInput.current) return;
+    if (e.key === "Enter") {
+      refInput.current.blur();
+      return handleSearch();
+    }
+  };
+
   return (
     <div className={cn("relative", "col-span-2")}>
       <div
@@ -166,14 +176,13 @@ function SearchInput() {
         Name
       </div>
       <Input
+        ref={refInput}
         type="text"
         placeholder="Search Name..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         onBlur={handleSearch}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") return handleSearch();
-        }}
+        onKeyDown={handleKeyDown}
       />
     </div>
   );
@@ -209,14 +218,16 @@ export default function MenuFilter(props: {
       ref={ref}
       className={cn(
         "sticky",
-        // "top-[calc(25svh+4rem)]",
+        // "top-[calc(33.33svh+4rem)]",
         "top-0",
-        "pt-[calc(25svh+4rem)]",
+        "pt-[calc(33.33svh+0.75rem)]",
+        // "h-[calc(100svh-0.75rem)],"
         "lg:pt-14",
-        "-mt-[calc(25svh+4rem)]",
+        "-mt-[33.33svh]",
         "lg:-mt-14",
         "bg-neutral-100",
         "dark:bg-neutral-950",
+        // "bg-red-500",
         "flex",
         "z-10",
         "scroll-mt-0",

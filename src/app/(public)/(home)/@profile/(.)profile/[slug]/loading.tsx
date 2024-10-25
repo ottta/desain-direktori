@@ -6,7 +6,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function Loading() {
   return (
     <div
-      className={cn("h-[25svh]", "lg:h-[calc(100svh-7rem)]", "overflow-hidden")}
+      className={cn(
+        "h-[33.33svh]",
+        "lg:h-[calc(100svh-7rem)]",
+        "overflow-hidden",
+      )}
     >
       <HeaderProfile>
         <Skeleton className={cn("h-4", "w-48", "border")} />

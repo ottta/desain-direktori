@@ -29,18 +29,16 @@ export default async function Page() {
 
   return (
     <>
-      <HeaderProfile className={cn("max-lg:hidden")}>
-        Directus Emeritus
-      </HeaderProfile>
+      <HeaderProfile>Directus Emeritus</HeaderProfile>
 
       <div
         className={cn(
-          "pt-2",
+          "lg:pt-2",
           "pb-4",
           "flex",
           "flex-col",
           "justify-between",
-          "h-[25svh]",
+          "h-[33.33svh]",
           "lg:h-[calc(100svh-7rem)]",
           "overflow-hidden",
         )}

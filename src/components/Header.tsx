@@ -1,5 +1,6 @@
 "use client";
 
+import ThemeSelector from "./ThemeSelector";
 import { AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { DialogDescription, DialogTitle } from "./ui/dialog";
@@ -10,23 +11,30 @@ import {
   DrawerTrigger,
 } from "./ui/drawer";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Switch } from "./ui/switch";
 
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
-import { HamburgerMenuIcon, LaptopIcon } from "@radix-ui/react-icons";
+import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { Session } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
-import { useTheme } from "next-themes";
 import NextLink from "next/link";
+import { useMediaQuery } from "usehooks-ts";
 
+import { MEDIA_MAX_MD } from "@/libs/constants";
 import { cn } from "@/libs/utils";
 
 export default function Header() {
   const { data: session } = useSession();
+  const MAX_MD = useMediaQuery(MEDIA_MAX_MD, {
+    defaultValue: false,
+    initializeWithValue: false,
+  });
 
+  if (MAX_MD) return null;
   return (
     <header
       className={cn(
+        // "hidden",
+        // "md:block",
         "fixed",
         "top-0",
         "right-0",
@@ -145,9 +153,6 @@ export default function Header() {
 }
 
 function User({ session }: { session: Session }) {
-  const { theme, setTheme, resolvedTheme } = useTheme();
-  const isSystem = theme === "system";
-  const isDark = resolvedTheme === "dark";
   return (
     <Popover>
       <PopoverTrigger asChild className={cn("max-lg:hidden")}>
@@ -195,27 +200,7 @@ function User({ session }: { session: Session }) {
         </ul>
         <div className={cn("flex", "items-center", "justify-between", "py-2")}>
           <div>Theme:</div>
-          <div className={cn("flex", "gap-1", "items-center")}>
-            <Switch
-              checked={isDark}
-              onCheckedChange={() => setTheme(isDark ? "light" : "dark")}
-              className={cn("!transition-all")}
-            />
-            <Button
-              variant="secondary"
-              onClick={() => setTheme("system")}
-              className={cn(
-                "w-6",
-                "h-6",
-                "rounded-full",
-                "p-0",
-                isSystem && "bg-neutral-100",
-                isSystem && "dark:bg-neutral-800",
-              )}
-            >
-              <LaptopIcon className={cn("!w-3")} />
-            </Button>
-          </div>
+          <ThemeSelector />
         </div>
         <div className={cn("pt-2")}>
           <Button
