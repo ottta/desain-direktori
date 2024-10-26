@@ -15,9 +15,9 @@ export default async function Page({
 }: {
   searchParams: SearchParams;
 }) {
-  const sParams = await searchParams;
+  const query = await searchParams;
   const endpoint = new URL(API_TENANTS, NEXT_PUBLIC_HOST);
-  Object.entries(sParams).forEach((item) => {
+  Object.entries(query).forEach((item) => {
     const [key, value] = item;
     if (key === "search") {
       endpoint.searchParams.append(key, value || "");

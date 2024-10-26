@@ -1,5 +1,8 @@
+import UpdateStatus from "./UpdateStatus";
+
 import { ResponseTenant } from "@/types/tenants";
 
+import { auth } from "@/auth";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { Metadata } from "next";
 import NextImage from "next/image";
@@ -19,6 +22,7 @@ type PageProps = {
 
 async function getTenant(slug: string) {
   const endpoint = new URL(`${API_TENANTS}/${slug}`, NEXT_PUBLIC_HOST);
+  endpoint.searchParams.append("status", "publish");
   const req = await fetcher<ResponseTenant>(endpoint.href);
   return req;
 }
@@ -36,6 +40,8 @@ export async function generateMetadata({
 }
 
 export default async function Page({ params, searchParams }: PageProps) {
+  await ASYNC_TIMEOUT(1000, null);
+
   const { slug } = await params;
   const sParams = await searchParams;
   const endpoint = new URL("/", NEXT_PUBLIC_HOST);
@@ -48,7 +54,7 @@ export default async function Page({ params, searchParams }: PageProps) {
     endpoint.searchParams.delete("callback_url");
   }
 
-  await ASYNC_TIMEOUT(1000, null);
+  const session = await auth();
 
   const { success, data } = await getTenant(slug);
   if (!success) notFound();
@@ -57,27 +63,32 @@ export default async function Page({ params, searchParams }: PageProps) {
     <>
       <HeaderProfile>
         <div>{data.name}</div>
-        <NextLink
-          href={endpoint.href}
-          scroll={false} // Its important prevent scroll juggling
-          className={cn(
-            "pr-3",
-            "pl-2",
-            "border",
-            "rounded-full",
-            "bg-red-100",
-            "hover:bg-red-100/80",
-            "dark:bg-red-600",
-            "dark:hover:bg-red-600/80",
-            "flex",
-            "items-center",
-            "gap-1",
-            "h-9",
-            "lg:h-7",
+        <div className={cn("flex", "gap-1")}>
+          {session && session.user && session.user.role !== "USER" && (
+            <UpdateStatus slug={data.slug} value={data.status.toLowerCase()} />
           )}
-        >
-          <Cross1Icon /> Close
-        </NextLink>
+          <NextLink
+            href={endpoint.href}
+            scroll={false} // Its important prevent scroll juggling
+            className={cn(
+              "pr-3",
+              "pl-2",
+              "border",
+              "rounded-full",
+              "bg-red-100",
+              "hover:bg-red-100/80",
+              "dark:bg-red-600",
+              "dark:hover:bg-red-600/80",
+              "flex",
+              "items-center",
+              "gap-1",
+              "h-9",
+              "lg:h-7",
+            )}
+          >
+            <Cross1Icon /> Close
+          </NextLink>
+        </div>
       </HeaderProfile>
 
       <div data-grid className={cn("@xs:grid-cols-6", "p-3")}>

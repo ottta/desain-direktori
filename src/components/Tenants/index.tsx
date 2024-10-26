@@ -1,11 +1,11 @@
 "use client";
 
 import TenantItem from "./TenantItem";
-import useSWRInfinite from "swr/infinite";
+import useSWRInfinite, { SWRInfiniteKeyLoader } from "swr/infinite";
 
 import { ResponseTenants } from "@/types/tenants";
 
-import { notFound, useSearchParams } from "next/navigation";
+import { notFound, usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
 
@@ -14,25 +14,25 @@ import { fetcher } from "@/libs/fetch";
 import { cn } from "@/libs/utils";
 
 function useScrolToTop() {
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const freezeSearchParams = useRef(searchParams.toString());
   const ref = useRef<HTMLUListElement>(null);
   useEffect(() => {
     if (!ref.current) return;
+    if (!pathname.startsWith("/profile")) return;
     if (searchParams.toString() === freezeSearchParams.current) return;
     ref.current.scrollIntoView({ behavior: "smooth" });
     freezeSearchParams.current = searchParams.toString();
-  }, [ref, searchParams, freezeSearchParams]);
+  }, [ref, searchParams, pathname, freezeSearchParams]);
   return ref;
 }
 
-export default function Tenants({ init }: { init: ResponseTenants }) {
+export function useGetKey(): SWRInfiniteKeyLoader {
   const searchParams = useSearchParams();
-
-  const getKey = (index: number, prevData: ResponseTenants) => {
+  return (index: number, prevData: ResponseTenants) => {
     const endpoint = new URL(API_TENANTS, NEXT_PUBLIC_HOST);
-    Array.from(searchParams.entries()).forEach((item) => {
-      const [key, value] = item;
+    searchParams.forEach((value, key) => {
       if (searchParams.has(key)) {
         endpoint.searchParams.set(key, value);
       } else {
@@ -48,6 +48,16 @@ export default function Tenants({ init }: { init: ResponseTenants }) {
     );
     return endpoint.href;
   };
+}
+
+export default function Tenants({
+  init,
+  callbackUrl = "/",
+}: {
+  init: ResponseTenants;
+  callbackUrl?: string;
+}) {
+  const getKey = useGetKey();
 
   const { data, error, size, setSize, isValidating, isLoading } =
     useSWRInfinite<ResponseTenants>(getKey, fetcher, {
@@ -89,10 +99,8 @@ export default function Tenants({ init }: { init: ResponseTenants }) {
       <ul
         ref={refParent}
         className={cn(
-          // isLoadingMore && "opacity-40",
           "gap-0",
           "md:gap-1",
-          // "scroll-mt-[calc(33.33svh+0.75rem)]",
           "scroll-mt-[calc(33.33svh)]",
           "md:scroll-mt-28",
           "relative",
@@ -101,10 +109,6 @@ export default function Tenants({ init }: { init: ResponseTenants }) {
           "md:block",
           "md:divide-y",
           "max-md:-mt-px",
-          // "max-md:gap-px",
-          // "max-md:bg-neutral-400",
-          // "max-md:pb-16",
-          // "max-md:border-y",
         )}
       >
         {data.map((item) =>
@@ -114,6 +118,7 @@ export default function Tenants({ init }: { init: ResponseTenants }) {
                 key={i}
                 index={i}
                 isLoading={isLoadingMore}
+                callbackUrl={callbackUrl}
                 {...item}
               />
             );

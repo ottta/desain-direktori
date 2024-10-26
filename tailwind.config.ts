@@ -13,6 +13,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      spacing: {
+        22: "5.5rem",
+      },
       fontFamily: {
         sans: ["var(--font-nouva)"],
       },
@@ -21,6 +24,35 @@ const config: Config = {
         "3xl": "1800px",
         "4xl": "2100px",
       },
+      colors: {
+        custom: {
+          pink: "#FF0080",
+          blue: "#0070F3",
+          cyan: "#50E3C2",
+          orange: "#F5A623",
+          violet: "#7928CA",
+        },
+      },
+      keyframes: ({ theme }) => ({
+        rerender: {
+          "0%": {
+            ["border-color"]: theme("colors.custom.pink"),
+          },
+          "40%": {
+            ["border-color"]: theme("colors.custom.pink"),
+          },
+        },
+        highlight: {
+          "0%": {
+            background: theme("colors.custom.pink"),
+            color: theme("colors.custom.white"),
+          },
+          "40%": {
+            background: theme("colors.custom.pink"),
+            color: theme("colors.custom.white"),
+          },
+        },
+      }),
     },
   },
 };

@@ -11,6 +11,8 @@ type StaticLink = { label: string } & LinkProps;
 
 export const LINK_PRIVATE: StaticLink[] = [
   { label: "Studio", href: "/studio" },
+  { label: "Tenant", href: "/studio/tenant" },
+  { label: "User", href: "/studio/user" },
 ];
 
 export const LINK_PUBLIC: StaticLink[] = [

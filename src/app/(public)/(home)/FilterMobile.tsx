@@ -1,6 +1,5 @@
 "use client";
 
-import FilterSearch from "./FilterSearch";
 import { FilterProps } from "./MenuFilter";
 
 import { MagnifyingGlassIcon, MixerVerticalIcon } from "@radix-ui/react-icons";
@@ -11,6 +10,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { NEXT_PUBLIC_HOST } from "@/libs/constants";
 import { cn } from "@/libs/utils";
 
+import TenantSearch from "@/components/Tenants/TenantSearch";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -102,7 +102,7 @@ export default function FilterMobile(props: FilterProps) {
               </DrawerNested>
             </div>
             <div className={cn("text-center", "text-sm", "uppercase")}>Or</div>
-            <FilterSearch />
+            <TenantSearch />
           </DrawerContent>
         </Drawer>
       </div>
@@ -163,20 +163,15 @@ function List({
     <ul className={cn("flex", "flex-wrap", "gap-1")}>
       {items.map((item, i) => {
         const isActive =
-          item.slug === "all" && !searchParams.get("city")
+          item.slug === "all" && !searchParams.has("city")
             ? true
             : item.slug === searchParams.get(query);
 
         const endpoint = new URL(pathname, NEXT_PUBLIC_HOST);
-        Array.from(searchParams.entries()).forEach(([key, value]) => {
+        searchParams.forEach((value, key) => {
           endpoint.searchParams.append(key, value);
         });
 
-        // if (item.slug === "all" && !!searchParams.get(query)) {
-        //   // endpoint.searchParams.delete(query);
-        // } else {
-        //   endpoint.searchParams.set(query, item.slug);
-        // }
         endpoint.searchParams.set(query, item.slug);
 
         return (

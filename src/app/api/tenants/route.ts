@@ -8,17 +8,19 @@ type TenantRoleKey = keyof typeof TenantRole;
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
+  const query = searchParams;
 
-  const cursor = searchParams.get("cursor") || null;
-  const search = searchParams.get("search") || "";
+  const cursor = query.get("cursor") || null;
+  const search = query.get("search") || "";
+  const author_id = query.get("author_id") || "";
 
-  const discipline = searchParams.get("discipline") || "all";
-  const city = searchParams.get("city") || "all";
+  const discipline = query.get("discipline") || "all";
+  const city = query.get("city") || "all";
   const category = (
-    searchParams.get("category") || "all"
+    query.get("category") || "all"
   ).toUpperCase() as TenantRoleKey;
   const status = (
-    searchParams.get("status") || "publish"
+    query.get("status") || "publish"
   ).toUpperCase() as TenantStatusKey;
 
   try {
@@ -44,8 +46,9 @@ export async function GET(req: Request) {
         status: status.startsWith("-")
           ? { not: status.replace(/-/g, "") as TenantStatusKey }
           : status,
+        ...(query.has("author_id") ? { author_id, status: undefined } : {}),
         // If `?search=` exists
-        ...(!!search
+        ...(query.has("search")
           ? { name: { contains: search, mode: "insensitive" } }
           : {}),
         ...(Object.values(TenantRole).includes(category)
