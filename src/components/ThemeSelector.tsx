@@ -26,6 +26,8 @@ export default function ThemeSelector() {
         className={cn(
           "w-8",
           "h-8",
+          "md:w-6",
+          "md:h-6",
           "rounded-full",
           "p-0",
           isSystem && "bg-neutral-100",

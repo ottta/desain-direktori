@@ -16,9 +16,11 @@ export default function Layout({
       {hero}
 
       <div data-container data-grid>
+        <div className={cn("md:col-span-4")}>{children}</div>
         <div
           className={cn(
             "col-span-6",
+            "md:col-span-8",
             "sticky",
             "top-0",
             // "pt-3",
@@ -42,7 +44,6 @@ export default function Layout({
             {profile}
           </div>
         </div>
-        <div className={cn("col-span-6")}>{children}</div>
       </div>
     </>
   );

@@ -11,21 +11,32 @@ import { ReactNode, useEffect, useRef } from "react";
 
 import { cn } from "@/libs/utils";
 
-type TenantItemProps = Tenant & { isLoading?: boolean; index: number };
+type TenantItemProps = Tenant & {
+  isLoading?: boolean;
+  index: number;
+  callbackUrl: string;
+};
 
 const TenantLink = ({
   slug,
   isActive,
   children,
   className,
+  callbackUrl,
 }: {
   slug: string;
   isActive: boolean;
   children: ReactNode;
   className?: string;
+  callbackUrl: string;
 }) => {
   const searchParams = useSearchParams();
   const sParams = new URLSearchParams(searchParams);
+  if (sParams.has("callback_url")) {
+    sParams.set("callback_url", callbackUrl);
+  } else {
+    sParams.append("callback_url", callbackUrl);
+  }
 
   const href = `/profile/${slug}${sParams.size > 0 ? `?${sParams.toString()}` : ""}`;
 
@@ -60,6 +71,7 @@ export default function TenantItem(props: TenantItemProps) {
     avatar_url,
     isLoading,
     index,
+    callbackUrl,
   } = props;
 
   const pathname = usePathname();
@@ -80,13 +92,7 @@ export default function TenantItem(props: TenantItemProps) {
     return () => clearTimeout(timeout);
   }, [isActive, ref]);
 
-  // const test = [
-  //   "max-md:border-r",
-  //   "max-md:border-x",
-  //   "max-md:border-x",
-  //   "max-md:border-l",
-  // ];
-  const test = ["", "max-md:border-x", ""];
+  const classNames = ["", "max-md:border-x", ""];
 
   return (
     <li
@@ -101,7 +107,7 @@ export default function TenantItem(props: TenantItemProps) {
         isLoading && "touch-none",
         isLoading && "pointer-events-none",
         "scroll-mt-[calc(33.33svh-1px)]",
-        "md:scroll-mt-[calc(7rem-2px)]",
+        "md:scroll-mt-[calc(7rem-1px)]",
         "p-0",
         "md:p-3",
         "group",
@@ -110,7 +116,7 @@ export default function TenantItem(props: TenantItemProps) {
         "justify-between",
         "max-md:border-y",
         "max-md:-mb-px",
-        test[index % test.length],
+        classNames[index % classNames.length],
       )}
     >
       <div
@@ -123,12 +129,12 @@ export default function TenantItem(props: TenantItemProps) {
           "max-md:h-full",
           "max-md:aspect-square",
           isActive && "opacity-30",
-          // "bg-green-300",
         )}
       >
         <TenantLink
           slug={slug}
           isActive={isActive}
+          callbackUrl={callbackUrl}
           className={cn(
             "max-md:w-full",
             "max-md:h-full",
@@ -147,7 +153,6 @@ export default function TenantItem(props: TenantItemProps) {
               "w-full",
               "md:w-14",
               "rounded-none",
-              // "bg-red-200",
               "flex",
               "items-center",
               "justify-center",
@@ -168,7 +173,7 @@ export default function TenantItem(props: TenantItemProps) {
         </TenantLink>
 
         <div className={cn("overflow-hidden", "max-md:hidden")}>
-          <TenantLink slug={slug} isActive={isActive}>
+          <TenantLink slug={slug} isActive={isActive} callbackUrl={callbackUrl}>
             <div
               dangerouslySetInnerHTML={{
                 __html: highlighter.highlight(name, query, {

@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 import { faker } from "@faker-js/faker";
 import { Prisma, Tenant } from "@prisma/client";
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 
 import { SchemaTenant } from "@/libs/schema";
@@ -158,6 +159,8 @@ export async function createTenant(prev: unknown, formData: FormData) {
         },
       },
     });
+
+    revalidateTag("tenants");
 
     return {
       success: true,

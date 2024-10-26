@@ -1,5 +1,7 @@
 "use client";
 
+import Boundary from "../Boundary";
+
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { KeyboardEvent, useRef, useState } from "react";
 
@@ -7,7 +9,7 @@ import { cn } from "@/libs/utils";
 
 import { Input } from "@/components/ui/input";
 
-export default function FilterSearch() {
+export default function TenantSearch() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -51,7 +53,7 @@ export default function FilterSearch() {
 
   return (
     <div className={cn("relative", "col-span-full", "lg:col-span-2")}>
-      <div
+      {/* <div
         className={cn(
           "absolute",
           "top-0",
@@ -69,17 +71,25 @@ export default function FilterSearch() {
         )}
       >
         Name
-      </div>
-      <Input
-        ref={refInput}
-        type="text"
-        placeholder="Search Name..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        onBlur={handleSearch}
-        onKeyDown={handleKeyDown}
-        className={cn("h-14", "lg:h-8", "text-xl", "md:text-base")}
-      />
+      </div> */}
+      <Boundary labels={["Name"]}>
+        <Input
+          ref={refInput}
+          type="text"
+          placeholder="Search Name..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onBlur={handleSearch}
+          onKeyDown={handleKeyDown}
+          className={cn(
+            "h-14",
+            "lg:h-9",
+            "text-xl",
+            "md:text-base",
+            "border-none",
+          )}
+        />
+      </Boundary>
     </div>
   );
 }

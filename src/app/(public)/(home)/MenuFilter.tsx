@@ -1,7 +1,6 @@
 "use client";
 
 import FilterMobile from "./FilterMobile";
-import FilterSearch from "./FilterSearch";
 
 import { IDiscipline } from "@/types/discipline";
 
@@ -12,9 +11,11 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { ReactNode, useEffect, useRef } from "react";
 import { useMediaQuery } from "usehooks-ts";
 
-import { MEDIA_MAX_MD } from "@/libs/constants";
+import { MEDIA_MAX_MD, NEXT_PUBLIC_HOST } from "@/libs/constants";
 import { cn } from "@/libs/utils";
 
+import Boundary from "@/components/Boundary";
+import TenantSearch from "@/components/Tenants/TenantSearch";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -78,47 +79,56 @@ function CustomButton({
 }) {
   return (
     <PopoverTrigger asChild className={cn("col-span-3", "lg:col-span-2")}>
-      <Button
-        variant="secondary"
-        className={cn(
-          "relative",
-          "justify-between",
-          "w-full",
-          "h-10",
-          "lg:h-8",
-        )}
-      >
-        <div
+      <Boundary labels={[label]}>
+        <Button
+          variant="secondary"
           className={cn(
-            "absolute",
-            "top-0",
-            "left-1",
-            "-translate-y-1/2",
-            "bg-red-100",
-            "text-neutral-900",
-            "px-2",
-            "rounded-full",
-            "text-[11px]",
-            "leading-[1.2]",
-            "select-none",
-            "border",
+            "relative",
+            "justify-between",
+            "w-full",
+            "h-10",
+            "lg:h-9",
+            "border-none",
           )}
         >
-          {label}
-        </div>
-        <div
-          className={cn(
-            "whitespace-nowrap",
-            "overflow-hidden",
-            "text-ellipsis",
-            "font-bold",
-          )}
-        >
-          {children}
-        </div>
+          {/* <div
+            className={cn(
+              "absolute",
+              "top-0",
+              "left-1",
+              "-translate-y-1/2",
+              "select-none",
+              "px-1",
+            )}
+          >
+            <div
+              className={cn(
+                "px-1",
+                "bg-red-100",
+                "text-neutral-900",
+                "rounded-full",
+                "text-xs",
+                "leading-[1.2]",
+                "border",
+              )}
+            >
+              {label}
+            </div>
+          </div> */}
+          <div
+            className={cn(
+              "whitespace-nowrap",
+              "overflow-hidden",
+              "text-ellipsis",
+              "font-bold",
+            )}
+          >
+            {children}
+          </div>
 
-        <CaretSortIcon />
-      </Button>
+          <CaretSortIcon />
+        </Button>
+      </Boundary>
     </PopoverTrigger>
   );
 }
@@ -169,6 +179,7 @@ function FilterDesktop(props: FilterProps) {
         "z-10",
         "scroll-mt-0",
         "overflow-hidden",
+        "-mb-px",
       )}
     >
       <div
@@ -185,7 +196,7 @@ function FilterDesktop(props: FilterProps) {
           "lg:px-0",
         )}
       >
-        <FilterSearch />
+        <TenantSearch />
         <Popover>
           <CustomButton label="City">
             {cities.find((item) => item.slug === searchParams.get("city"))
@@ -203,26 +214,26 @@ function FilterDesktop(props: FilterProps) {
               )}
             >
               {cities.map((item, i) => {
-                const isActive = item.slug === searchParams.get("city");
+                const key = "city";
+                const isActive = item.slug === searchParams.get(key);
+                const endpoint = new URL(pathname, NEXT_PUBLIC_HOST);
+                searchParams.forEach((value, key) => {
+                  endpoint.searchParams.append(key, value);
+                });
 
-                const search = new URLSearchParams(searchParams.toString());
-                if (item.slug === "all" && !!searchParams.get("city")) {
-                  search.delete("city");
+                if (item.slug === "all" && searchParams.has(key)) {
+                  endpoint.searchParams.delete(key);
                 } else {
-                  search.set("city", item.slug);
+                  endpoint.searchParams.set(key, item.slug);
                 }
 
-                const href =
-                  search.size > 0
-                    ? pathname + "?" + search.toString()
-                    : pathname;
                 return (
                   <Chip
                     key={i}
-                    href={href}
+                    href={endpoint.href}
                     label={item.name}
                     active={
-                      item.slug === "all" && !searchParams.get("city")
+                      item.slug === "all" && !searchParams.has(key)
                         ? true
                         : isActive
                     }
@@ -251,27 +262,27 @@ function FilterDesktop(props: FilterProps) {
               )}
             >
               {disciplines.map((item, i) => {
-                const isActive = item.slug === searchParams.get("discipline");
+                const key = "discipline";
+                const isActive = item.slug === searchParams.get(key);
 
-                const search = new URLSearchParams(searchParams.toString());
-                if (item.slug === "all" && !!searchParams.get("discipline")) {
-                  search.delete("discipline");
+                const endpoint = new URL(pathname, NEXT_PUBLIC_HOST);
+                searchParams.forEach((value, key) => {
+                  endpoint.searchParams.append(key, value);
+                });
+
+                if (item.slug === "all" && searchParams.has(key)) {
+                  endpoint.searchParams.delete(key);
                 } else {
-                  search.set("discipline", item.slug);
+                  endpoint.searchParams.set(key, item.slug);
                 }
-
-                const href =
-                  search.size > 0
-                    ? pathname + "?" + search.toString()
-                    : pathname;
 
                 return (
                   <Chip
                     key={i}
-                    href={href}
+                    href={endpoint.href}
                     label={item.name}
                     active={
-                      item.slug === "all" && !searchParams.get("discipline")
+                      item.slug === "all" && !searchParams.has(key)
                         ? true
                         : isActive
                     }

@@ -107,12 +107,9 @@ export default function Header() {
             "lg:px-0",
           )}
         >
-          {/* <NextLink
-            href="/about"
-            className={cn("px-3", "hover:underline", "max-lg:hidden")}
-          >
+          <NextLink href="/about" className={cn("px-3", "hover:underline")}>
             About
-          </NextLink> */}
+          </NextLink>
 
           {session && session.user ? (
             <User session={session} />

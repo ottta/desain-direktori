@@ -1,4 +1,4 @@
-import { TenantRole } from "@prisma/client";
+import { TenantRole, TenantStatus } from "@prisma/client";
 
 type TenantMedia = {
   title: string;
@@ -18,6 +18,7 @@ export type Tenant = {
   type: TenantRole;
   cursor: number;
   media: TenantMedia[];
+  status: TenantStatus;
 };
 
 type BaseResponse = {

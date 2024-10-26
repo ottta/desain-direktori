@@ -77,12 +77,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     authorized({ request, auth }) {
       const { pathname } = request.nextUrl;
 
-      if (pathname === "/studio") {
+      if (pathname.startsWith("/submission")) return !!auth;
+      if (pathname.startsWith("/studio")) {
         if (auth && auth.user && auth.user.role === "USER") return false;
         return !!auth;
       }
 
-      if (pathname === "/submission") return !!auth;
       return true;
     },
     jwt({ token, trigger, session, user }) {
