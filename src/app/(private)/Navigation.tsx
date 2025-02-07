@@ -34,7 +34,7 @@ export default function Navigation() {
           "bg-neutral-200",
           "dark:bg-neutral-800",
           "p-1",
-          "rounded",
+          "rounded-sm",
           "border",
         )}
       >
@@ -61,7 +61,7 @@ export default function Navigation() {
                   "border",
                   "border-transparent",
                   isActive && "bg-neutral-100",
-                  isActive && "shadow",
+                  isActive && "shadow-sm",
                   isActive && "text-neutral-900",
                   isActive && "border-neutral-400 dark:border-neutral-900",
                 )}

@@ -61,7 +61,7 @@ export default function FilterMobile(props: FilterProps) {
                 "w-16",
                 "h-16",
                 "rounded-full",
-                "shadow",
+                "shadow-sm",
                 "z-50",
                 "bg-green-100",
                 // "translate-x-1/2",
@@ -69,8 +69,8 @@ export default function FilterMobile(props: FilterProps) {
                 // "ml-1",
               )}
             >
-              {/* <MagnifyingGlassIcon className={cn("!w-7", "!h-7")} /> */}
-              <MixerVerticalIcon className={cn("!w-7", "!h-7")} />
+              {/* <MagnifyingGlassIcon className={cn("w-7!", "h-7!")} /> */}
+              <MixerVerticalIcon className={cn("w-7!", "h-7!")} />
             </Button>
           </DrawerTrigger>
           <DrawerContent className={cn("px-3", "space-y-3", "pb-20")}>
@@ -133,7 +133,7 @@ function DrawerNested({
           variant="outline"
           className={cn("h-14", "text-lg", "overflow-hidden")}
         >
-          <MagnifyingGlassIcon className={cn("!h-6", "!w-6")} />{" "}
+          <MagnifyingGlassIcon className={cn("h-6!", "w-6!")} />{" "}
           <span>
             {label}: {value}
           </span>

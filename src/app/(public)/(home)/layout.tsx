@@ -16,7 +16,6 @@ export default function Layout({
       {hero}
 
       <div data-container data-grid>
-        <div className={cn("md:col-span-4")}>{children}</div>
         <div
           className={cn(
             "col-span-6",
@@ -28,6 +27,7 @@ export default function Layout({
             "lg:top-0",
             "lg:pt-0",
             "z-20",
+            "lg:order-last",
           )}
         >
           <div
@@ -43,6 +43,19 @@ export default function Layout({
           >
             {profile}
           </div>
+        </div>
+
+        <div
+          className={cn(
+            "col-span-full",
+            "lg:col-span-4",
+            // "bg-red-100",
+            // "md:bg-blue-100",
+            // "lg:bg-yellow-100",
+            // "xl:bg-green-100",
+          )}
+        >
+          {children}
         </div>
       </div>
     </>

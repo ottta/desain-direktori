@@ -15,8 +15,8 @@ const Boundary = forwardRef<HTMLDivElement, BoundaryProps>((props, ref) => {
       className={cn(
         "relative",
         "border",
-        "rounded",
-        "animate-[rerender_1s_ease-in-out_1]",
+        "rounded-sm",
+        "animate-rerender",
         rest.className,
       )}
     >
@@ -46,7 +46,7 @@ const Boundary = forwardRef<HTMLDivElement, BoundaryProps>((props, ref) => {
               "text-xs",
               "leading-[1.2]",
               "capitalize",
-              "animate-[highlight_1s_ease-in-out_1]",
+              "animate-highlight",
             )}
           >
             {item}

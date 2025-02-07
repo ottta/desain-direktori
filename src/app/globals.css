@@ -1,6 +1,62 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme {
+  --font-sans: var(--font-nouva);
+
+  --breakpoint-2xl: 1500px;
+  --breakpoint-3xl: 1800px;
+  --breakpoint-4xl: 2100px;
+
+  --color-custom-pink: #ff0080;
+  --color-custom-blue: #0070f3;
+  --color-custom-cyan: #50e3c2;
+  --color-custom-orange: #f5a623;
+  --color-custom-violet: #7928ca;
+
+  --animate-rerender: rerender 1s ease-in-out 1;
+  --animate-highlight: highlight 1s ease-in-out 1;
+
+  @keyframes rerender {
+    0% {
+      border-color: var(--color-custom-pink);
+    }
+    40% {
+      border-color: var(--color-custom-pink);
+    }
+  }
+
+  @keyframes highlight {
+    0% {
+      background-color: var(--color-custom-pink);
+      color: var(--color-custom-orange);
+    }
+    40% {
+      background-color: var(--color-custom-pink);
+      color: var(--color-custom-orange);
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
 
 @layer base {
   * {
@@ -14,7 +70,7 @@
 
   [data-container] {
     @apply w-full;
-    @apply max-w-screen-xl 2xl:max-w-screen-2xl 3xl:max-w-screen-3xl 4xl:max-w-screen-4xl;
+    @apply max-w-(--breakpoint-xl) 2xl:max-w-(--breakpoint-2xl) 3xl:max-w-(--breakpoint-3xl) 4xl:max-w-(--breakpoint-4xl);
     @apply mx-auto;
     @apply px-0 lg:px-12;
   }

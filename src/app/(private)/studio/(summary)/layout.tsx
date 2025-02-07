@@ -46,7 +46,7 @@ export default function Layout({
                 className={cn(
                   "border",
                   "px-2",
-                  "rounded",
+                  "rounded-sm",
                   "bg-neutral-200",
                   "dark:bg-neutral-800",
                 )}

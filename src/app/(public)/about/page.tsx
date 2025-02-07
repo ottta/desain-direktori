@@ -1,9 +1,10 @@
 import { prisma } from "@/prisma";
 import { Metadata } from "next";
-import NextImage from "next/image";
-import NextLink from "next/link";
 
-import { getGithubContributors } from "@/libs/fetch";
+// import NextImage from "next/image";
+// import NextLink from "next/link";
+
+// import { getGithubContributors } from "@/libs/fetch";
 import { cn } from "@/libs/utils";
 
 const about = [
@@ -19,11 +20,11 @@ export const metadata: Metadata = {
 };
 
 export default async function About() {
-  const [tenants, disciplines, cities, contributors] = await Promise.all([
+  const [tenants, disciplines, cities] = await Promise.all([
     prisma.tenant.count(),
     prisma.discipline.count(),
     prisma.city.count(),
-    getGithubContributors(),
+    // getGithubContributors(),
   ]);
 
   return (
@@ -39,7 +40,7 @@ export default async function About() {
         className={cn(
           "text-neutral-400",
           "dark:text-neutral-500",
-          "max-w-screen-sm",
+          "max-w-(--breakpoint-sm)",
           "text-2xl",
           // "lg:text-2xl",
           "px-3",
@@ -48,11 +49,11 @@ export default async function About() {
           "[&_a]:font-bold",
           "[&_a]:text-neutral-900",
           "[&_strong]:text-neutral-900",
-          "[&_a]:dark:text-neutral-200",
-          "[&_strong]:dark:text-neutral-200",
+          "dark:[&_a]:text-neutral-200",
+          "dark:[&_strong]:text-neutral-200",
         )}
       />
-      <div className={cn("px-3")}>
+      {/* <div className={cn("px-3")}>
         <div className={cn("text-4xl", "mb-2")}>GitHub Contributors</div>
         {contributors && (
           <ul className={cn("flex", "gap-1")}>
@@ -107,7 +108,7 @@ export default async function About() {
               ))}
           </ul>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }

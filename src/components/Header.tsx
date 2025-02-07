@@ -59,8 +59,8 @@ export default function Header() {
             className={cn(
               // "hover:bg-neutral-300/80",
               // "hover:text-neutral-100",
-              // "hover:dark:bg-neutral-950",
-              // "hover:dark:text-neutral-300",
+              // "dark:hover:bg-neutral-950",
+              // "dark:hover:text-neutral-300",
               "px-3",
               "py-2",
               "whitespace-nowrap",
@@ -69,7 +69,7 @@ export default function Header() {
               // "bg-neutral-300",
               // "dark:bg-neutral-950",
               // "border",
-              // "rounded",
+              // "rounded-sm",
             )}
           >
             +62 |{" "}
@@ -107,6 +107,12 @@ export default function Header() {
             "lg:px-0",
           )}
         >
+          <NextLink
+            href="/inspiration"
+            className={cn("px-3", "hover:underline")}
+          >
+            Inspiration
+          </NextLink>
           <NextLink href="/about" className={cn("px-3", "hover:underline")}>
             About
           </NextLink>
@@ -155,7 +161,7 @@ function User({ session }: { session: Session }) {
       <PopoverTrigger asChild className={cn("max-lg:hidden")}>
         <Button
           variant="ghost"
-          className={cn("aspect-square", "!p-0", "!rounded-full")}
+          className={cn("aspect-square", "p-0!", "rounded-full!")}
         >
           <Avatar
             className={cn(
