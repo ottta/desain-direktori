@@ -45,7 +45,7 @@ export default async function Page() {
           // "h-[33.33svh]",
           // "lg:h-[calc(100svh-7rem)]",
           "overflow-hidden",
-          "min-h-[calc(100lvh-7rem)]",
+          "lg:min-h-[calc(100lvh-7rem)]",
           // "bg-red-200",
         )}
       >
