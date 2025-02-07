@@ -62,7 +62,10 @@ export default async function Page({ params, searchParams }: PageProps) {
   return (
     <>
       <HeaderProfile>
-        <div>{data.name}</div>
+        <div className={cn("font-bold")}>
+          {/* {data.name} */}
+          Profile
+        </div>
         <div className={cn("flex", "gap-1")}>
           {session && session.user && session.user.role !== "USER" && (
             <UpdateStatus slug={data.slug} value={data.status.toLowerCase()} />

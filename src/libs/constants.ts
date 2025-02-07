@@ -21,3 +21,16 @@ export const LINK_PUBLIC: StaticLink[] = [
   { label: "Submission", href: "/submission" },
   { label: "Term of Use", href: "/policy/term-of-use" },
 ];
+
+export const SITE_DATA = {
+  name: "Directus Emeritus",
+  name_html: "<b>Directus</b> Emeritus",
+  // name: "+62 | Desain Direktori",
+  // name_html: "+62 | <b>Desain</b> Direktori",
+  logo: null,
+  description: {
+    text: "Directus Emeritus is an online repository of South East Asia creative people and companies",
+    html: `<strong>Directus Emeritus</strong> is an online repository of <strong>%DATA_CREATIVES%</strong> creatives within <strong>%DATA_DISCIPLINES%</strong> disciplines across <strong>%DATA_CITIES%</strong> cities and growing.`,
+  },
+  established_at: "2024-08-30T00:00:00.000Z",
+};

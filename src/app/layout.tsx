@@ -2,7 +2,8 @@ import Providers from "./Providers";
 import "./globals.css";
 
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Mona_Sans } from "next/font/google";
+// import localFont from "next/font/local";
 import NextTopLoader from "nextjs-toploader";
 import { ReactNode } from "react";
 
@@ -27,16 +28,24 @@ export const metadata: Metadata = {
   },
 };
 
-const sans = localFont({
+// const sans = localFont({
+//   display: "block",
+//   variable: "--font-sans",
+//   src: [
+//     {
+//       path: "./fonts/Nouva-VF.woff2",
+//       weight: "100 900",
+//       style: "normal",
+//     },
+//   ],
+// });
+
+const sans = Mona_Sans({
   display: "block",
-  variable: "--font-nouva",
-  src: [
-    {
-      path: "./fonts/Nouva-VF.woff2",
-      weight: "100 900",
-      style: "normal",
-    },
-  ],
+  variable: "--font-sans",
+  weight: "variable",
+  style: ["normal", "italic"],
+  subsets: ["latin", "latin-ext"],
 });
 
 export default async function RootLayout({

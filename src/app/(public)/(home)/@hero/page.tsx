@@ -18,7 +18,7 @@ function Value({
   label: string;
 }) {
   return (
-    <span>
+    <div>
       <span className={cn("text-neutral-400", "dark:text-neutral-600")}>
         {Array.from({ length: padLong - digitLength(value) })
           .map(() => "0")
@@ -30,7 +30,7 @@ function Value({
           {label}
         </span>
       </span>
-    </span>
+    </div>
   );
 }
 
@@ -53,27 +53,43 @@ export default async function Page() {
   return (
     <div
       data-container
-      className={cn("min-h-[33.33vh]", "z-30", "relative", "mb-16", "lg:mb-14")}
+      data-grid
+      className={cn(
+        "min-h-[50lvh]",
+        "z-30",
+        "relative",
+        // "mb-16",
+        // "lg:mb-14",
+        // "bg-red-400",
+      )}
     >
       <div
-        style={{ fontFeatureSettings: `"tnum" 1` }}
         className={cn(
-          "portrait:text-4xl",
-          "landscape:text-6xl",
-          "landscape:lg:text-7xl",
-          "px-3",
-          "lg:px-2",
-          "leading-[0.8]!",
-          "uppercase",
+          "col-span-full",
+          "lg:col-span-6",
+          "@container",
+          "pb-16",
+          // "bg-red-100",
         )}
       >
-        <Value label="Cities" value={cities} padLong={padLong} />
-        <br />
-        <Value label="Disciplines" value={disciplines} padLong={padLong} />
-        <br />
-        <Value label="Companies" value={companies} padLong={padLong} />
-        <br />
-        <Value label="Persons" value={persons} padLong={padLong} />
+        <div
+          className={cn(
+            // "portrait:text-4xl",
+            // "landscape:text-6xl",
+            // "landscape:lg:text-7xl",
+            "px-3",
+            "lg:px-2",
+            "text-[11cqw]",
+            "leading-[0.9]!",
+            "uppercase",
+            "tabular-nums",
+          )}
+        >
+          <Value label="Cities" value={cities} padLong={padLong} />
+          <Value label="Disciplines" value={disciplines} padLong={padLong} />
+          <Value label="Companies" value={companies} padLong={padLong} />
+          <Value label="Persons" value={persons} padLong={padLong} />
+        </div>
       </div>
     </div>
   );
