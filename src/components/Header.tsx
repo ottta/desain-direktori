@@ -17,19 +17,12 @@ import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { Session } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
 import NextLink from "next/link";
-import { useMediaQuery } from "usehooks-ts";
 
-import { MEDIA_MAX_MD } from "@/libs/constants";
+import { SITE_DATA } from "@/libs/constants";
 import { cn } from "@/libs/utils";
 
 export default function Header() {
   const { data: session } = useSession();
-  const MAX_MD = useMediaQuery(MEDIA_MAX_MD, {
-    defaultValue: false,
-    initializeWithValue: false,
-  });
-
-  if (MAX_MD) return null;
   return (
     <header
       className={cn(
@@ -43,6 +36,7 @@ export default function Header() {
         "bg-neutral-100",
         "dark:bg-neutral-950",
         "overflow-hidden",
+        "max-md:hidden",
         // "transition",
         // "duration-500",
       )}
@@ -55,30 +49,19 @@ export default function Header() {
         <div className={cn("col-span-3", "lg:col-span-6")}>
           <NextLink
             href="/"
-            style={{ fontFeatureSettings: `"tnum" 1, "case" 1` }}
+            dangerouslySetInnerHTML={{ __html: SITE_DATA.name_html }}
             className={cn(
-              // "hover:bg-neutral-300/80",
-              // "hover:text-neutral-100",
-              // "dark:hover:bg-neutral-950",
-              // "dark:hover:text-neutral-300",
               "px-3",
               "py-2",
               "whitespace-nowrap",
               "overflow-hidden",
               "text-ellipsis",
-              // "bg-neutral-300",
-              // "dark:bg-neutral-950",
-              // "border",
-              // "rounded-sm",
+              "hover:underline",
             )}
-          >
-            +62 |{" "}
-            <span className={cn("uppercase", "font-semibold")}>Desain</span>{" "}
-            Direktori
-          </NextLink>
+          />
         </div>
 
-        {/* <div
+        <div
           className={cn(
             "col-span-3",
             "flex",
@@ -93,7 +76,7 @@ export default function Header() {
           >
             Submission
           </NextLink>
-        </div> */}
+        </div>
 
         <div
           className={cn(

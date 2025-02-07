@@ -9,9 +9,8 @@ import { CaretSortIcon } from "@radix-ui/react-icons";
 import NextLink from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ReactNode, useEffect, useRef } from "react";
-import { useMediaQuery } from "usehooks-ts";
 
-import { MEDIA_MAX_MD, NEXT_PUBLIC_HOST } from "@/libs/constants";
+import { NEXT_PUBLIC_HOST } from "@/libs/constants";
 import { cn } from "@/libs/utils";
 
 import Boundary from "@/components/Boundary";
@@ -180,6 +179,8 @@ function FilterDesktop(props: FilterProps) {
         "scroll-mt-0",
         "overflow-hidden",
         "-mb-px",
+        "hidden",
+        "md:block",
       )}
     >
       <div
@@ -298,11 +299,10 @@ function FilterDesktop(props: FilterProps) {
 }
 
 export default function MenuFilter(props: FilterProps) {
-  const MAX_MD = useMediaQuery(MEDIA_MAX_MD, {
-    defaultValue: true,
-    initializeWithValue: false,
-  });
-
-  if (MAX_MD) return <FilterMobile {...props} />;
-  return <FilterDesktop {...props} />;
+  return (
+    <>
+      <FilterMobile {...props} />
+      <FilterDesktop {...props} />
+    </>
+  );
 }

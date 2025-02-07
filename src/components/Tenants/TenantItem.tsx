@@ -144,6 +144,7 @@ export default function TenantItem(props: TenantItemProps) {
             "after:bg-red-500",
             "after:opacity-0",
             "visited:after:opacity-50",
+            "shrink-0",
           )}
         >
           <Avatar

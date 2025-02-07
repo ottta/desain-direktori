@@ -39,6 +39,7 @@ export default function FilterMobile(props: FilterProps) {
         "left-0",
         "z-50",
         "grid",
+        "md:hidden",
         "grid-cols-3",
         "pb-14",
         "pointer-events-none",

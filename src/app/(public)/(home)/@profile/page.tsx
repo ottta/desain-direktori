@@ -1,20 +1,10 @@
 import { prisma } from "@/prisma";
 import NextLink from "next/link";
-import { ReactNode } from "react";
 
+import { SITE_DATA } from "@/libs/constants";
 import { cn } from "@/libs/utils";
 
 import HeaderProfile from "@/components/HeaderProfile";
-
-function Highlight({ children }: { children: ReactNode }) {
-  return (
-    <span
-      className={cn("font-bold", "text-neutral-900", "dark:text-neutral-100")}
-    >
-      {children}
-    </span>
-  );
-}
 
 export default async function Page() {
   const [tenants, disciplines, cities] = await Promise.all([
@@ -22,6 +12,12 @@ export default async function Page() {
     prisma.discipline.count(),
     prisma.city.count(),
   ]);
+
+  const establishedDate = new Date(SITE_DATA.established_at);
+  const currentDate = new Date();
+
+  const establishedYear = establishedDate.getFullYear();
+  const currentYear = currentDate.getFullYear();
 
   return (
     <div
@@ -33,7 +29,7 @@ export default async function Page() {
         "max-md:border-b",
       )}
     >
-      <HeaderProfile>Directus Emeritus</HeaderProfile>
+      <HeaderProfile>{SITE_DATA.name}</HeaderProfile>
 
       <div
         className={cn(
@@ -49,41 +45,48 @@ export default async function Page() {
           // "bg-red-200",
         )}
       >
-        <p
-          className={cn(
-            "text-3xl",
-            "lg:text-5xl",
-            "leading-[0.9]",
-            "px-3",
-            "max-w-(--breakpoint-sm)",
-            "text-neutral-400",
-            "dark:text-neutral-600",
-          )}
-        >
-          <Highlight>Desain Direktori</Highlight> is an online repository of{" "}
-          <Highlight>{tenants}</Highlight> creatives within{" "}
-          <Highlight>{disciplines}</Highlight> disciplines across{" "}
-          <Highlight>{cities}</Highlight> cities and growing.
-          <br />
+        <article className={cn("px-3", "lg:px-2")}>
+          <p
+            dangerouslySetInnerHTML={{
+              __html: SITE_DATA.description.html
+                .replace("%DATA_CREATIVES%", tenants.toString())
+                .replace("%DATA_DISCIPLINES%", disciplines.toString())
+                .replace("%DATA_CITIES%", cities.toString()),
+            }}
+            className={cn(
+              "text-[6.666cqw]",
+              "lg:text-[5.5cqw]",
+              // "lg:text-6xl",
+              "leading-[0.9]",
+              "text-neutral-400",
+              "dark:text-neutral-600",
+              "[&_strong]:text-neutral-900",
+              "mb-3",
+            )}
+          ></p>
           <NextLink
             href="/about"
-            className={cn("hover:underline", "text-xl", "font-normal")}
+            className={cn("hover:underline", "font-normal")}
           >
             Read More...
           </NextLink>
-        </p>
+        </article>
 
         <div
           className={cn(
             "px-3",
-            "text-sm",
+            "text-xs",
             "leading-[1.2]",
             "max-lg:hidden",
             "text-neutral-500",
           )}
         >
           <div>
-            Copyright &copy;2024 Unforma Club. Typeface use{" "}
+            Copyright &copy;
+            {currentYear - establishedYear > 0
+              ? `${establishedYear}—${currentYear}`
+              : currentYear}{" "}
+            Unforma Club. Typeface use{" "}
             <NextLink
               href="https://unforma.club/font/nouva"
               target="_blank"
