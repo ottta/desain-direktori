@@ -23,7 +23,7 @@ export default async function Page() {
           "p-3",
           "text-neutral-400",
           "dark:text-neutral-600",
-          "max-w-screen-sm",
+          "max-w-(--breakpoint-sm)",
         )}
       >
         There is{" "}

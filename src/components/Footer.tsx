@@ -74,7 +74,7 @@ export default function Footer() {
               "border-b-none rounded-t-3xl bottom-0 left-0 right-0 h-full",
               "max-h-vh",
               "-mx-px",
-              "!shadow-[0rem_-0.5rem_2rem_-1.25rem_#737373]",
+              "shadow-[0rem_-0.5rem_2rem_-1.25rem_#737373]!",
             )}
           >
             <div className={cn("gap-y-4", "flex", "flex-col", "relative")}>

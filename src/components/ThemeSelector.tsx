@@ -18,7 +18,7 @@ export default function ThemeSelector() {
       <Switch
         checked={isDark}
         onCheckedChange={() => setTheme(isDark ? "light" : "dark")}
-        className={cn("!transition-all")}
+        className={cn("transition-all!")}
       />
       <Button
         variant="secondary"
@@ -34,7 +34,7 @@ export default function ThemeSelector() {
           isSystem && "dark:bg-neutral-800",
         )}
       >
-        <LaptopIcon className={cn("!w-3")} />
+        <LaptopIcon className={cn("w-3!")} />
       </Button>
     </div>
   );

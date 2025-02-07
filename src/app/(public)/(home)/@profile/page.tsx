@@ -9,11 +9,7 @@ import HeaderProfile from "@/components/HeaderProfile";
 function Highlight({ children }: { children: ReactNode }) {
   return (
     <span
-      className={cn(
-        "font-semibold",
-        "text-neutral-900",
-        "dark:text-neutral-100",
-      )}
+      className={cn("font-bold", "text-neutral-900", "dark:text-neutral-100")}
     >
       {children}
     </span>
@@ -49,6 +45,8 @@ export default async function Page() {
           // "h-[33.33svh]",
           // "lg:h-[calc(100svh-7rem)]",
           "overflow-hidden",
+          "min-h-[calc(100lvh-7rem)]",
+          // "bg-red-200",
         )}
       >
         <p
@@ -57,7 +55,7 @@ export default async function Page() {
             "lg:text-5xl",
             "leading-[0.9]",
             "px-3",
-            "max-w-screen-sm",
+            "max-w-(--breakpoint-sm)",
             "text-neutral-400",
             "dark:text-neutral-600",
           )}
@@ -85,7 +83,7 @@ export default async function Page() {
           )}
         >
           <div>
-            &copy;2024 Unforma Club. Typeface use{" "}
+            Copyright &copy;2024 Unforma Club. Typeface use{" "}
             <NextLink
               href="https://unforma.club/font/nouva"
               target="_blank"

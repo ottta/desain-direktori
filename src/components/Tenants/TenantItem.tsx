@@ -51,7 +51,7 @@ const TenantLink = ({
         "relative",
         "group-hover:underline",
         "visited:text-neutral-400",
-        "visited:dark:text-neutral-600",
+        "dark:visited:text-neutral-600",
         isActive && "underline",
         className,
       )}
@@ -101,7 +101,7 @@ export default function TenantItem(props: TenantItemProps) {
       className={cn(
         "gap-1",
         !isActive && "hover:bg-neutral-300",
-        !isActive && "hover:dark:bg-neutral-950/20",
+        !isActive && "dark:hover:bg-neutral-950/20",
         isActive && "bg-neutral-300",
         isActive && "dark:bg-neutral-950/50",
         isLoading && "touch-none",

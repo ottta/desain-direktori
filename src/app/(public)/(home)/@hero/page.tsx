@@ -63,7 +63,7 @@ export default async function Page() {
           "landscape:lg:text-7xl",
           "px-3",
           "lg:px-2",
-          "!leading-[0.8]",
+          "leading-[0.8]!",
           "uppercase",
         )}
       >
