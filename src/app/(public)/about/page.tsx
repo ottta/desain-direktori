@@ -1,9 +1,10 @@
 import { prisma } from "@/prisma";
 import { Metadata } from "next";
-import NextImage from "next/image";
-import NextLink from "next/link";
 
-import { getGithubContributors } from "@/libs/fetch";
+// import NextImage from "next/image";
+// import NextLink from "next/link";
+
+// import { getGithubContributors } from "@/libs/fetch";
 import { cn } from "@/libs/utils";
 
 const about = [
@@ -19,11 +20,11 @@ export const metadata: Metadata = {
 };
 
 export default async function About() {
-  const [tenants, disciplines, cities, contributors] = await Promise.all([
+  const [tenants, disciplines, cities] = await Promise.all([
     prisma.tenant.count(),
     prisma.discipline.count(),
     prisma.city.count(),
-    getGithubContributors(),
+    // getGithubContributors(),
   ]);
 
   return (
@@ -52,7 +53,7 @@ export default async function About() {
           "dark:[&_strong]:text-neutral-200",
         )}
       />
-      <div className={cn("px-3")}>
+      {/* <div className={cn("px-3")}>
         <div className={cn("text-4xl", "mb-2")}>GitHub Contributors</div>
         {contributors && (
           <ul className={cn("flex", "gap-1")}>
@@ -107,7 +108,7 @@ export default async function About() {
               ))}
           </ul>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }
