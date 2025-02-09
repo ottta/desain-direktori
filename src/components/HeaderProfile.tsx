@@ -3,7 +3,6 @@ import { HTMLAttributes } from "react";
 import { cn } from "@/libs/utils";
 
 export default function HeaderProfile({
-  children,
   className,
   ...rest
 }: HTMLAttributes<HTMLDivElement>) {
@@ -22,8 +21,6 @@ export default function HeaderProfile({
         "w-full",
         className,
       )}
-    >
-      {children}
-    </div>
+    />
   );
 }

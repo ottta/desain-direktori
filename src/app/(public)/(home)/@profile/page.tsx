@@ -29,7 +29,11 @@ export default async function Page() {
         "max-md:border-b",
       )}
     >
-      <HeaderProfile>{SITE_DATA.name}</HeaderProfile>
+      <HeaderProfile
+        dangerouslySetInnerHTML={{
+          __html: `<span>${SITE_DATA.name.html}</span>`,
+        }}
+      />
 
       <div
         className={cn(

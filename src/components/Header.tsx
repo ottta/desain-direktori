@@ -49,7 +49,7 @@ export default function Header() {
         <div className={cn("col-span-3", "lg:col-span-6")}>
           <NextLink
             href="/"
-            dangerouslySetInnerHTML={{ __html: SITE_DATA.name_html }}
+            dangerouslySetInnerHTML={{ __html: SITE_DATA.name.html }}
             className={cn(
               "px-3",
               "py-2",
@@ -68,13 +68,14 @@ export default function Header() {
             "gap-2",
             "items-center",
             "max-lg:hidden",
+            "text-sm",
           )}
         >
           <NextLink
-            href="/submission"
+            href="/inspiration"
             className={cn("px-3", "hover:underline")}
           >
-            Submission
+            Inspiration
           </NextLink>
         </div>
 
@@ -88,13 +89,14 @@ export default function Header() {
             "gap-2",
             "px-3",
             "lg:px-0",
+            "text-sm",
           )}
         >
           <NextLink
-            href="/inspiration"
+            href="/submission"
             className={cn("px-3", "hover:underline")}
           >
-            Inspiration
+            Submission
           </NextLink>
           <NextLink href="/about" className={cn("px-3", "hover:underline")}>
             About

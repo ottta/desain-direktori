@@ -62,10 +62,7 @@ export default async function Page({ params, searchParams }: PageProps) {
   return (
     <>
       <HeaderProfile>
-        <div className={cn("font-bold")}>
-          {/* {data.name} */}
-          Profile
-        </div>
+        <div className={cn("font-bold")}>Profile</div>
         <div className={cn("flex", "gap-1")}>
           {session && session.user && session.user.role !== "USER" && (
             <UpdateStatus slug={data.slug} value={data.status.toLowerCase()} />
@@ -94,15 +91,80 @@ export default async function Page({ params, searchParams }: PageProps) {
         </div>
       </HeaderProfile>
 
-      <div data-grid className={cn("@xs:grid-cols-6", "p-3")}>
-        <div className={cn("col-span-6", "flex", "items-start", "gap-2")}>
+      <div data-grid className={cn("@xs:grid-cols-8", "gap-3")}>
+        <div className={cn("col-span-8", "grid", "grid-cols-subgrid", "gap-3")}>
+          <div
+            className={cn(
+              "col-span-6",
+              "px-3",
+              "py-2",
+              // "bg-neutral-200",
+              "grid",
+              "grid-cols-subgrid",
+            )}
+          >
+            <div
+              className={cn(
+                "text-3xl",
+                "lg:text-5xl",
+                "font-bold",
+                "col-span-full",
+              )}
+            >
+              {data.name}
+            </div>
+
+            <div className={cn("col-span-1")}>
+              <div className={cn("text-neutral-400", "text-sm")}>Type</div>
+              <div>{data.type}</div>
+            </div>
+            <div className={cn("col-span-1")}>
+              <div className={cn("text-neutral-400", "text-sm")}>
+                Disciplines
+              </div>
+              <ul>
+                {data.discipline.map((item, i) => (
+                  <li key={i}>{item.name}</li>
+                ))}
+              </ul>
+            </div>
+            <div className={cn("col-span-1")}>
+              <div className={cn("text-neutral-400", "text-sm")}>Cities</div>
+              <ul>
+                {data.address.map((item, i) => (
+                  <li key={i}>{item.city.name}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className={cn("col-span-full")}>
+              <div className={cn("text-neutral-400", "text-sm")}>Media</div>
+              <ul>
+                {[
+                  "https://unforma.club",
+                  "https://instagram.com",
+                  "https://x.com",
+                ].map((item, i) => (
+                  <li key={i}>
+                    <NextLink
+                      href={item}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {item}
+                    </NextLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
           <div
             className={cn(
               "relative",
               "aspect-square",
               "overflow-hidden",
-              "w-24",
-              "shrink-0",
+              "col-span-2",
+              "bg-red-200",
             )}
           >
             <NextImage
@@ -111,25 +173,36 @@ export default async function Page({ params, searchParams }: PageProps) {
               alt={data.name}
               src={data.avatar_url}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className={cn("w-full", "h-full", "bg-neutral-200")}
             />
           </div>
-          <div>
-            <div className={cn("text-3xl", "lg:text-5xl", "font-bold")}>
-              {data.name}
-            </div>
-            <div>{data.type}</div>
-            <ul>
-              {data.discipline.map((item, i) => (
-                <li key={i}>{item.name}</li>
-              ))}
-            </ul>
-          </div>
+          {/* <div className={cn("col-span-5")}>
+            <article
+              className={cn(
+                "*:not-first:mt-[1em]",
+                "*:not-last:mb-[1em]",
+                "[&_h2]:text-xl",
+                "[&_h2]:font-bold",
+                "[&_p]:max-w-2xl",
+                "[&_p]:leading-[1.5]",
+                "px-3",
+              )}
+              dangerouslySetInnerHTML={{
+                __html: [
+                  `<h2>What is Lorem Ipsum?</h2>`,
+                  `<p><b>Lorem Ipsum</b> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>`,
+                ].join(""),
+              }}
+            />
+          </div> */}
         </div>
 
-        <div className={cn("col-span-6", "py-2")}>
+        {/* <div className={cn("col-span-6", "grid", "grid-cols-subgrid", "gap-3")}>
           <a href={`/profile/${slug}`}>Detail</a>
-          {/* <pre>{JSON.stringify({ success, data }, null, 2)}</pre> */}
-        </div>
+          <pre className={cn("bg-red-400")}>
+            {JSON.stringify({ success, data }, null, 2)}
+          </pre>
+        </div> */}
       </div>
     </>
   );

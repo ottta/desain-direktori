@@ -23,10 +23,10 @@ export const LINK_PUBLIC: StaticLink[] = [
 ];
 
 export const SITE_DATA = {
-  name: "Directus Emeritus",
-  name_html: "<b>Directus</b> Emeritus",
-  // name: "+62 | Desain Direktori",
-  // name_html: "+62 | <b>Desain</b> Direktori",
+  name: {
+    text: "Directus Emeritus",
+    html: "<b>Directus</b> Emeritus",
+  },
   logo: null,
   description: {
     text: "Directus Emeritus is an online repository of South East Asia creative people and companies",
