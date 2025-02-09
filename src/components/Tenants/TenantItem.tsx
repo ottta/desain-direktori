@@ -32,11 +32,7 @@ const TenantLink = ({
 }) => {
   const searchParams = useSearchParams();
   const sParams = new URLSearchParams(searchParams);
-  if (sParams.has("callback_url")) {
-    sParams.set("callback_url", callbackUrl);
-  } else {
-    sParams.append("callback_url", callbackUrl);
-  }
+  sParams.set("callback_url", callbackUrl);
 
   const href = `/profile/${slug}${sParams.size > 0 ? `?${sParams.toString()}` : ""}`;
 
@@ -100,15 +96,14 @@ export default function TenantItem(props: TenantItemProps) {
       style={{ fontFeatureSettings: `"tnum" 1` }}
       className={cn(
         "gap-1",
-        !isActive && "hover:bg-neutral-300",
+        !isActive && "hover:bg-neutral-200",
         !isActive && "dark:hover:bg-neutral-950/20",
-        isActive && "bg-neutral-300",
+        isActive && "bg-neutral-200",
         isActive && "dark:bg-neutral-950/50",
         isLoading && "touch-none",
         isLoading && "pointer-events-none",
         "scroll-mt-[calc(33.33svh-1px)]",
         "md:scroll-mt-[calc(7rem-1px)]",
-        "p-0",
         "md:p-3",
         "group",
         "flex",
@@ -157,6 +152,7 @@ export default function TenantItem(props: TenantItemProps) {
               "flex",
               "items-center",
               "justify-center",
+              "md:border",
             )}
           >
             <AvatarImage alt="Avatar" src={avatar_url} />

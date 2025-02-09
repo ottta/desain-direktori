@@ -9,22 +9,16 @@ import { cn } from "@/libs/utils";
 import Tenants from "@/components/Tenants";
 
 type SearchParams = Promise<{ [key: string]: string }>;
-
-export default async function Page({
-  searchParams,
-}: {
+type PageProps = {
   searchParams: SearchParams;
-}) {
+};
+
+export default async function Page({ searchParams }: PageProps) {
   const query = await searchParams;
   const endpoint = new URL(API_TENANTS, NEXT_PUBLIC_HOST);
-  Object.entries(query).forEach((item) => {
-    const [key, value] = item;
-    if (key === "search") {
-      endpoint.searchParams.append(key, value || "");
-    } else {
-      endpoint.searchParams.append(key, value || "all");
-    }
-  });
+  Object.entries(query).forEach(([key, value]) =>
+    endpoint.searchParams.set(key, value),
+  );
 
   const [disciplines, cities, data] = await Promise.all([
     getDisciplines(),
